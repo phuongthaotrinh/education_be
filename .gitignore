@@ -7,3 +7,5 @@ thunder-tests
 env
 dist
 mongodb_playground
+.trunk
+trunk
