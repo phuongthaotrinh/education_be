@@ -1,0 +1,546 @@
+paths:
+   /classes:
+      post:
+         tags:
+            - Classes
+         description: Thêm 1 class
+         summary: Đăng nhập với vai trò là Headmaster
+         requestBody:
+            require: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/Class'
+                  example: { className: '2d', grade: 2, headTeacher: 637ec5ce577ebd6709c65124 }
+
+         responses:
+            201:
+               description: Return trả về có thể là {} || [] tùy trường hợp thêm 1 hoặc nhiều
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Class'
+                     example:
+                        {
+                           'className': '2F',
+                           'grade': 2,
+                           'headTeacher': null,
+                           '_id': '64a062a49201bb2a288e1c4e',
+                           'deleted': false,
+                           'createdAt': '2023-07-01T17:30:12.737Z',
+                           'updatedAt': '2023-07-01T17:30:12.737Z',
+                           '__v': 0,
+                           'id': '64a062a49201bb2a288e1c4e'
+                        }
+
+            204:
+               description: Không nhận được data gửi lên
+            409:
+               description: Class đã tồn tại trên database
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 409, message: Classes already exists }
+            400:
+               description: Class không thỏa mãn validate
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 400, message: Bad Request }
+      get:
+         tags:
+            - Classes
+         description: Lấy ra class và phân trang
+         summary: Cần đăng nhập
+         parameters:
+            - name: '_sort'
+              default: grade
+              in: query
+              description: Tên thuộc tính trong class muốn sắp xếp
+              schema:
+                 type: string
+                 enum:
+                    - className
+                    - grade
+                    - createdAt
+                    - updatedAt
+            - name: '_order'
+              in: query
+              default: asc
+              description: Kiểu sắp xếp
+              schema:
+                 type: string
+                 enum:
+                    - asc
+                    - desc
+         responses:
+            200:
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           classes:
+                              type: array
+                              items:
+                                 $ref: '#/components/schemas/Class'
+                           page:
+                              type: number
+                           sort:
+                              type: array
+                              items:
+                                 type: string
+                     example:
+                        {
+                           sort: ['className', 'desc'],
+                           page: 1,
+                           classes:
+                              [
+                                 {
+                                    '_id': '649873ac72f21fd80aa41a8b',
+                                    'className': '5A',
+                                    'grade': 5,
+                                    'headTeacher':
+                                       {
+                                          '_id': '646a220e8ab818b29b2339e5',
+                                          'email': 'taminhchien151102@gmail.com',
+                                          'phone': '0365677527',
+                                          'displayName': 'Tạ Minh Chiếnas'
+                                       },
+                                    'deleted': false,
+                                    'createdAt': '2023-05-04T17:29:21.650Z',
+                                    'updatedAt': '2023-06-10T05:58:15.689Z',
+                                    '__v': 0,
+                                    'totalStudents': 1,
+                                    'id': '649873ac72f21fd80aa41a8b'
+                                 },
+                                 {
+                                    '_id': '649b15eaab7fbd51cb158b81',
+                                    'className': '5D',
+                                    'grade': 5,
+                                    'headTeacher':
+                                       {
+                                          '_id': '6448f4d7d362bc157275d9df',
+                                          'email': 'hieptqph19231@fpt.edu.vn',
+                                          'phone': '0123321123',
+                                          'displayName': 'Teacher 1'
+                                       },
+                                    'deleted': false,
+                                    'createdAt': '2023-06-27T17:01:30.542Z',
+                                    'updatedAt': '2023-06-27T17:01:30.542Z',
+                                    '__v': 0,
+                                    'totalStudents': 4,
+                                    'id': '649b15eaab7fbd51cb158b81'
+                                 },
+                                 {
+                                    '_id': '6453eb71216135d079532ddf',
+                                    'className': '4B',
+                                    'grade': 4,
+                                    'headTeacher':
+                                       {
+                                          '_id': '646a220e8ab818b29b2339e5',
+                                          'email': 'taminhchien151102@gmail.com',
+                                          'phone': '0365677527',
+                                          'displayName': 'Tạ Minh Chiếnas'
+                                       },
+                                    'deleted': false,
+                                    'createdAt': '2023-05-04T17:29:21.650Z',
+                                    'updatedAt': '2023-06-10T05:58:15.689Z',
+                                    '__v': 0,
+                                    'totalStudents': 8,
+                                    'id': '6453eb71216135d079532ddf'
+                                 },
+                                 {
+                                    '_id': '645227d4f950ab74cb145cf0',
+                                    'className': '2A',
+                                    'grade': 2,
+                                    'headTeacher':
+                                       {
+                                          '_id': '648ffaff6870de71418c68ec',
+                                          'email': 'duongcoi1803@gmail.com',
+                                          'phone': '0982967647',
+                                          'displayName': 'Dương teacher'
+                                       },
+                                    'deleted': false,
+                                    'createdAt': '2023-04-28T14:08:03.923Z',
+                                    'updatedAt': '2023-06-26T16:40:59.825Z',
+                                    '__v': 0,
+                                    'deletedAt': '2023-05-04T11:53:33.351Z',
+                                    'totalStudents': 1,
+                                    'id': '645227d4f950ab74cb145cf0'
+                                 },
+                                 {
+                                    '_id': '644bd34372da9763af8381d7',
+                                    'className': '1A',
+                                    'grade': 1,
+                                    'headTeacher':
+                                       {
+                                          '_id': '6458618de0c0f37cbfa2bf62',
+                                          'email': 'linh1@gmail.com',
+                                          'phone': '0982967641',
+                                          'displayName': 'Dương student'
+                                       },
+                                    'deleted': false,
+                                    'createdAt': '2023-04-28T14:08:03.923Z',
+                                    'updatedAt': '2023-07-01T15:54:15.554Z',
+                                    '__v': 0,
+                                    'deletedAt': '2023-06-10T05:57:47.740Z',
+                                    'totalStudents': 5,
+                                    'id': '644bd34372da9763af8381d7'
+                                 },
+                                 {
+                                    '_id': '645227dcf950ab74cb145cf1',
+                                    'className': '1B',
+                                    'grade': 1,
+                                    'headTeacher':
+                                       {
+                                          '_id': '6490c2e0abe8c3b43ec5beed',
+                                          'email': 'teacher_x@gmail.com',
+                                          'phone': '0123890120',
+                                          'displayName': 'Giáo viên X'
+                                       },
+                                    'deleted': false,
+                                    'createdAt': '2023-04-28T14:08:03.923Z',
+                                    'updatedAt': '2023-06-26T16:41:04.472Z',
+                                    '__v': 0,
+                                    'deletedAt': '2023-05-04T17:29:36.366Z',
+                                    'totalStudents': 3,
+                                    'id': '645227dcf950ab74cb145cf1'
+                                 },
+                                 {
+                                    '_id': '6492c4090a278f69c269a06e',
+                                    'className': '1C',
+                                    'grade': 1,
+                                    'headTeacher':
+                                       {
+                                          '_id': '64527b48ffdab8007dca632d',
+                                          'email': 'cholon031@gmail.com',
+                                          'phone': '0123890123',
+                                          'displayName': 'Giáo viên 2'
+                                       },
+                                    'deleted': false,
+                                    'createdAt': '2023-06-21T09:34:01.406Z',
+                                    'updatedAt': '2023-06-21T09:34:01.406Z',
+                                    '__v': 0,
+                                    'totalStudents': 1,
+                                    'id': '6492c4090a278f69c269a06e'
+                                 },
+                                 {
+                                    '_id': '649c097105dcc1d17ce4a33a',
+                                    'className': '1V',
+                                    'grade': 1,
+                                    'headTeacher':
+                                       {
+                                          '_id': '64527c27799092a02b7a1381',
+                                          'email': 'nghiemmanhcuong198@gmail.com',
+                                          'phone': '0987954222',
+                                          'displayName': 'Giáo viên Cường Ha Vớt'
+                                       },
+                                    'deleted': false,
+                                    'createdAt': '2023-06-28T10:20:33.802Z',
+                                    'updatedAt': '2023-06-28T10:20:33.802Z',
+                                    '__v': 0,
+                                    'totalStudents': 0,
+                                    'id': '649c097105dcc1d17ce4a33a'
+                                 }
+                              ]
+                        }
+            400:
+               description: _sort truyền lên không hợp lệ
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpResponse'
+                     example:
+                        {
+                           statusCode: 400,
+                           message: "_sort can only belong to ['className', 'grade','createdAt','updatedAt']"
+                        }
+            502:
+               description: truyền sortProperties không đúng
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        {
+                           statusCode: 502,
+                           message: "sortProperties can only belong to ['className', 'grade','createdAt','updatedAt']"
+                        }
+   /classes/:id:
+      get:
+         tags:
+            - Classes
+         description: Lấy ra thông tin 1 class
+         summary: Cần đăng nhập
+         responses:
+            200:
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Class'
+                     example:
+                        {
+                           '_id': '649873ac72f21fd80aa41a8b',
+                           'className': '5A',
+                           'grade': 5,
+                           'headTeacher':
+                              {
+                                 '_id': '646a220e8ab818b29b2339e5',
+                                 'email': 'taminhchien151102@gmail.com',
+                                 'phone': '0365677527',
+                                 'displayName': 'Tạ Minh Chiếnas'
+                              },
+                           'deleted': false,
+                           'createdAt': '2023-05-04T17:29:21.650Z',
+                           'updatedAt': '2023-06-10T05:58:15.689Z',
+                           '__v': 0,
+                           'totalStudents': 1,
+                           'id': '649873ac72f21fd80aa41a8b'
+                        }
+            400:
+               description: Không truyền id hoặc id không phải là kiểu objectId
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 400, message: Missing parameter }
+            404:
+               description: Không tìm thấy class
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 404, message: Class not found }
+      patch:
+         tags:
+            - Classes
+         description: Sửa lại 1 class
+         summary: Đăng nhập với vai trò Headmaster
+         requestBody:
+            require: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/Class'
+                  example: { className: '2d', grade: 2, headTeacher: 637ec5ce577ebd6709c65124 }
+         responses:
+            201:
+               description: 'Sửa thành công'
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Class'
+                     example:
+                        {
+                           '_id': '64a062a49201bb2a288e1c4e',
+                           'className': '2F',
+                           'grade': 3,
+                           'headTeacher': null,
+                           'deleted': false,
+                           'createdAt': '2023-07-01T17:30:12.737Z',
+                           'updatedAt': '2023-07-01T17:32:21.059Z',
+                           '__v': 0,
+                           'id': '64a062a49201bb2a288e1c4e'
+                        }
+            304:
+               description: Không có sự thay đổi nào do data gửi lên rỗng hoặc dữ liệu bị trùng dữ liệu cũ
+            400:
+               description: Tên class và grade không khớp nhau hoặc data gửi lên không thỏa mãn validate
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 400, message: grade+"A|B|C|D..." }
+            404:
+               description: Class không tồn tại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 404, message: Classes does not exist | _id of the classes is invalid }
+
+      delete:
+         tags:
+            - Classes
+         description: Xóa 1 class
+         summary: Đăng nhập với vai trò Headmaster
+         parameters:
+            - name: option
+              in: query
+              description: Xác định kiểu xóa
+              schema:
+                 type: string
+                 enum:
+                    - soft
+                    - force
+              default: soft
+
+         responses:
+            200:
+               description: Xóa class thành công
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           message:
+                              type: string
+                     example:
+                        { message: Class has been permanently deleted(force) | moved the class to the trash(soft) }
+            204:
+               description: không truyền id
+   /classes/trash:
+      get:
+         tags:
+            - Classes
+         description: Lấy ra tất cả các class đã bị xóa mềm
+         summary: Cần đăng nhập bằng quyền Headmaster
+         responses:
+            200:
+               description: ok
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Class'
+                     example:
+                        [
+                           {
+                              '_id': '645227e5f950ab74cb145cf2',
+                              'className': '2B',
+                              'grade': 2,
+                              'headTeacher': null,
+                              'deleted': true,
+                              'createdAt': '2023-04-28T14:08:03.923Z',
+                              'updatedAt': '2023-05-04T11:53:52.181Z',
+                              '__v': 0,
+                              'deletedAt': '2023-05-04T11:53:52.181Z',
+                              'id': '645227e5f950ab74cb145cf2'
+                           },
+                           {
+                              '_id': '645270279a97ff4899dc90ea',
+                              'className': '2C',
+                              'grade': 2,
+                              'headTeacher': null,
+                              'deleted': true,
+                              'createdAt': '2023-05-03T14:31:03.675Z',
+                              'updatedAt': '2023-05-09T07:40:29.004Z',
+                              '__v': 0,
+                              'deletedAt': '2023-05-09T07:40:28.994Z',
+                              'id': '645270279a97ff4899dc90ea'
+                           },
+                           {
+                              '_id': '64539d501a87090516f63389',
+                              'className': '3B',
+                              'grade': 3,
+                              'headTeacher':
+                                 {
+                                    '_id': '64527b48ffdab8007dca632d',
+                                    'email': 'cholon031@gmail.com',
+                                    'phone': '0123890123',
+                                    'displayName': 'Giáo viên 2'
+                                 },
+                              'deleted': true,
+                              'createdAt': '2023-05-04T11:56:01.156Z',
+                              'updatedAt': '2023-05-04T11:56:28.144Z',
+                              '__v': 0,
+                              'deletedAt': '2023-05-04T11:56:28.144Z',
+                              'id': '64539d501a87090516f63389'
+                           },
+                           {
+                              '_id': '645900cc01bd8e2626e1bfe8',
+                              'className': '4A',
+                              'grade': 4,
+                              'headTeacher':
+                                 {
+                                    '_id': '64527c27799092a02b7a1381',
+                                    'email': 'nghiemmanhcuong198@gmail.com',
+                                    'phone': '0987954222',
+                                    'displayName': 'Giáo viên Cường Ha Vớt'
+                                 },
+                              'deleted': true,
+                              'createdAt': '2023-05-08T14:01:48.248Z',
+                              'updatedAt': '2023-06-21T09:33:54.309Z',
+                              '__v': 0,
+                              'deletedAt': '2023-06-21T09:33:54.302Z',
+                              'id': '645900cc01bd8e2626e1bfe8'
+                           },
+                           {
+                              '_id': '645bc4ddeb049f12628899c3',
+                              'className': '2D',
+                              'grade': 2,
+                              'headTeacher': null,
+                              'deleted': true,
+                              'createdAt': '2023-05-10T16:22:53.677Z',
+                              'updatedAt': '2023-06-10T05:57:44.800Z',
+                              '__v': 0,
+                              'deletedAt': '2023-06-10T05:57:44.799Z',
+                              'id': '645bc4ddeb049f12628899c3'
+                           },
+                           {
+                              '_id': '645cfa9f9a221644bfadf01e',
+                              'className': '3A',
+                              'grade': 3,
+                              'headTeacher': null,
+                              'deleted': true,
+                              'createdAt': '2023-05-11T14:24:31.889Z',
+                              'updatedAt': '2023-06-10T05:57:36.042Z',
+                              '__v': 0,
+                              'deletedAt': '2023-06-10T05:57:36.041Z',
+                              'id': '645cfa9f9a221644bfadf01e'
+                           },
+                           {
+                              '_id': '645cfcbc9a221644bfadf053',
+                              'className': '3C',
+                              'grade': 3,
+                              'headTeacher': null,
+                              'deleted': true,
+                              'createdAt': '2023-05-11T14:33:32.420Z',
+                              'updatedAt': '2023-06-10T05:57:39.621Z',
+                              '__v': 0,
+                              'deletedAt': '2023-06-10T05:57:39.621Z',
+                              'id': '645cfcbc9a221644bfadf053'
+                           },
+                           {
+                              '_id': '64a062a49201bb2a288e1c4e',
+                              'className': '2F',
+                              'grade': 3,
+                              'headTeacher': null,
+                              'deleted': true,
+                              'createdAt': '2023-07-01T17:30:12.737Z',
+                              'updatedAt': '2023-07-01T17:33:14.714Z',
+                              '__v': 0,
+                              'deletedAt': '2023-07-01T17:33:14.713Z',
+                              'id': '64a062a49201bb2a288e1c4e'
+                           }
+                        ]
+   /classes/:id/restore:
+      patch:
+         tags:
+            - Classes
+         description: Khôi phục 1 class đã bị xóa mềm
+         summary: Đăng nhập với vai trò là Headmaster
+         responses:
+            201:
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           statusCode:
+                              type: number
+                           message:
+                              type: string
+                     example: { statusCode: 200, message: Class have been restored }
+            400:
+               description: Không nhận được id hoặc id không phải kiểu objectId type
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpResponse'
+                     example: { statusCode: 400, message: 'id must type must be object id, id received: abc' }

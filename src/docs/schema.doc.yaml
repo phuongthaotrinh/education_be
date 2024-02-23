@@ -1,0 +1,617 @@
+components:
+   schemas:
+      User:
+         type: object
+         properties:
+            _id:
+               type: string
+            displayName:
+               type: string
+            gender:
+               type: string
+               format: uppercase
+               enum:
+                  - nam
+                  - nữ
+            email:
+               type: string
+
+            eduBackground:
+               type: object
+               properties:
+                  qualification:
+                     type: string
+                  universityName:
+                     type: string
+                  graduatedAt:
+                     type: date
+               example:
+                  {
+                     qualification: 'Cao Đẳng',
+                     universityName: 'FPT Poly',
+                     graduatedAt: '2023-03-14T17:02:24.526+00:00'
+                  }
+            phone:
+               type: string
+            dateOfBirth:
+               type: Date
+            isVerified:
+               type: boolean
+         required:
+            - fullName
+            - email
+            - eduBackground
+            - phone
+            - dateOfBirth
+
+      SearchParentUserResponse:
+         properties:
+            _id:
+               type: ObjectId
+            displayName:
+               description: Tên Phụ Huynh
+               type: string
+            gender:
+               type: string
+               format: uppercase
+               enum:
+                  - nam
+                  - nữ
+            email:
+               type: string
+            phone:
+               type: string
+            dateOfBirth:
+               type: Date
+            picture:
+               type: string
+            employmentStatus:
+               type: boolean
+            role:
+               type: string
+               enum:
+                  - Headmaster
+                  - Teacher
+                  - Parents
+            isVerified:
+               type: boolean
+            deleted:
+               type: boolean
+            createdAt:
+               type: Date
+            updatedAt:
+               type: Date
+            address:
+               type: string
+
+      Teacher:
+         allOf:
+            - $ref: '#/components/schemas/User'
+            - type: object
+         properties:
+            employmentStatus:
+               type: boolean
+               default: false
+
+      Parent:
+         type: object
+         properties:
+            _id:
+               type: string
+            displayName:
+               description: Tên Phụ Huynh
+               type: string
+            gender:
+               type: string
+               format: uppercase
+               enum:
+                  - nam
+                  - nữ
+            email:
+               type: string
+            children:
+               type: array
+               properties:
+                  _id:
+                     type: string
+                  fullName:
+                     type: string
+                  parentsPhoneNumber:
+                     type: string
+            phone:
+               type: string
+            dateOfBirth:
+               type: Date
+
+         required:
+            - displayName
+            - email
+            - phone
+            - dateOfBirth
+            - gender
+
+      Class:
+         type: object
+         properties:
+            _id:
+               type: string
+               example: '637ec5ce577ebd6709c65124'
+            className:
+               type: string
+               description: 'Tên lớp học'
+               example: '2D'
+            grade:
+               type: number
+               description: 'Khối của lớp học'
+               example: 2
+            headTeacher:
+               type: ObjectId
+               description: 'id giáo viên chủ nhiệm'
+               example: '637ec5ce577ebd6709c65124'
+            createdAt:
+               type: Date
+               example: '2023-03-14T17:02:24.526+00:00'
+            updatedAt:
+               type: Date
+               example: '2023-03-14T17:02:24.526+00:00'
+            deleted:
+               type: Boolean
+               example: false
+
+      Subject:
+         type: object
+         properties:
+            _id:
+               type: ObjectId
+            subjectName:
+               type: string
+               description: 'Tên môn học'
+            subjectCode:
+               type: string
+               unique: true
+               description: 'slug của môn học (server tự tạo)'
+            isMainSubject:
+               type: boolean
+               required: true
+               description: 'Môn học chính hoặc không, dùng để xác định cách thức đánh giá, bằng điểm/nhận xét'
+            isElectiveSubject:
+               type: boolean
+               required: true
+               description: 'Môn học tự chọn hoặc không, dùng để xác định bắt buộc có trong bảng điểm/không'
+            createdAt:
+               type: Date
+            updatedAt:
+               type: Date
+            deleted:
+               type: Boolean
+            deletedAt:
+               type: Date
+
+      Permissions:
+         type: object
+         required:
+            - role
+            - type
+         properties:
+            _id:
+               type: string
+               example: '637ec5ce577ebd6709c65124'
+               format: uuid
+            role:
+               type: string
+               enum:
+                  - Headmaster
+                  - Teacher
+                  - Parents
+            type:
+               type: string
+               example: 'class'
+            permissions:
+               type: array
+               items:
+                  type: object
+                  required:
+                     - code
+                     - name
+                  properties:
+                     _id:
+                        type: string
+                        format: uuid
+                     name:
+                        type: string
+                        example: 'Lớp học'
+                     code:
+                        type: string
+                        example: 'class.list_all'
+                        uniqueItems: true
+
+      Student:
+         type: object
+         properties:
+            _id:
+               type: ObjectId
+            code:
+               type: string
+               description: 'mã định danh của bộ giáo dục'
+               required: true
+            fullName:
+               type: string
+               required: true
+               description: 'Họ tên đầy đủ'
+            gender:
+               type: boolean
+               required: true
+               description: 'Giới tính'
+            dateOfBirth:
+               type: Date
+               required: true
+               description: 'Ngày sinh'
+            class:
+               type: ObjectId
+               required: true
+               description: 'id lớp học hiện tại'
+            parents:
+               type: string
+               required: true
+               description: 'ID user phụ huynh'
+            isPolicyBeneficiary:
+               type: boolean
+               description: 'Có phải gia định thuộc diện chính sách không'
+            isGraduated:
+               type: boolean
+               description: 'Đã tốt nghiệp chưa'
+            dropoutDate:
+               type: Date | null
+               description: 'Ngày bỏ học (không đi học nữa hoặc bị đuổi)'
+            transferSchool:
+               type: Date | null
+               description: 'Ngày chuyển trường'
+            absentDays:
+               $ref: '#/components/schemas/Attendance'
+
+      Attendance:
+         type: array
+         items:
+            type: object
+            properties:
+               _id:
+                  type: ObjectId
+               date:
+                  type: Date
+                  description: 'Ngày vắng mặt'
+               hasPermision:
+                  type: boolean
+                  description: 'Có phép không'
+                  default: false
+               reason:
+                  type: string
+                  description: 'Lý do nghỉ'
+                  default: 'Không lý do'
+
+      StudentResponse:
+         type: object
+         properties:
+            docs:
+               type: array
+               items:
+                  $ref: '#/components/schemas/Student'
+            totalDocs:
+               type: number
+            limit:
+               type: number
+            totalPages:
+               type: number
+            page:
+               type: number
+            pagingCounter:
+               type: number
+            hasPrevPage:
+               type: boolean
+            hasNextPage:
+               type: boolean
+            prevPage:
+               type: boolean
+            nextPage:
+               type: boolean
+
+      SchoolYear:
+         type: object
+         properties:
+            _id:
+               type: objectId
+            name:
+               type: string
+               required: true
+            startAt:
+               type: Date
+               default: năm hiện tại
+            endAt:
+               type: Date
+               default: năm hiện tại + 1
+            createdAt:
+               type: Date
+            updatedAt:
+               type: Date
+
+      SchoolYearResponse:
+         type: object
+         properties:
+            docs:
+               type: array
+               items:
+                  $ref: '#/components/schemas/SchoolYear'
+            totalDocs:
+               type: number
+            limit:
+               type: number
+            totalPages:
+               type: number
+            page:
+               type: number
+            pagingCounter:
+               type: number
+            hasPrevPage:
+               type: boolean
+            hasNextPage:
+               type: boolean
+            prevPage:
+               type: boolean
+            nextPage:
+               type: boolean
+
+      SubjectTranscript:
+         type: object
+         properties:
+            student:
+               type: objectId
+               required: true
+               description: id học sinh
+            firstSemester:
+               type: object
+               description: điểm học kỳ 1 (không bắt buộc)
+               properties:
+                  midtermTest:
+                     type: number
+                     required: true
+                     min: 0
+                     max: 10
+                     description: Điểm giữa kỳ 1
+                  finalTest:
+                     type: number
+                     required: true
+                     min: 0
+                     max: 10
+                     description: Điểm cuối kỳ 1
+            secondSemester:
+               type: object
+               description: điểm học kỳ 2 (không bắt buộc)
+               properties:
+                  midtermTest:
+                     type: number
+                     required: true
+                     min: 0
+                     max: 10
+                     description: Điểm giữa kỳ 2
+                  finalTest:
+                     type: number
+                     required: true
+                     min: 0
+                     max: 10
+                     description: Điểm cuối kỳ 2
+
+      SubjectTranscriptUpdateOne:
+         type: object
+         properties:
+            firstSemester:
+               type: object
+               description: điểm học kỳ 1 (không bắt buộc)
+               properties:
+                  midtermTest:
+                     type: number
+                     required: true
+                     min: 0
+                     max: 10
+                     description: Điểm giữa kỳ 1
+                  finalTest:
+                     type: number
+                     required: true
+                     min: 0
+                     max: 10
+                     description: Điểm cuối kỳ 1
+            secondSemester:
+               type: object
+               description: điểm học kỳ 2 (không bắt buộc)
+               properties:
+                  midtermTest:
+                     type: number
+                     required: true
+                     min: 0
+                     max: 10
+                     description: Điểm giữa kỳ 2
+                  finalTest:
+                     type: number
+                     required: true
+                     min: 0
+                     max: 10
+                     description: Điểm cuối kỳ 2
+
+      LearningMaterial:
+         type: object
+         properties:
+            _id:
+               type: string
+            fileName:
+               type: string
+               required: true
+            mimeType:
+               type: string
+               required: true
+            downloadUrl:
+               type: string
+               default: ''
+            subject:
+               type: string
+               requried: true
+            grade:
+               type: number
+               requried: true
+            deleted:
+               type: boolean
+               default: false
+
+      TimeTable:
+         type: object
+         properties:
+            schedule:
+               required: true
+               type: object
+               description: Lịch học các ngày trong tuần
+               properties:
+                  monday:
+                     type: array
+                     required: true
+                     items:
+                        type: object
+                        properties:
+                           period:
+                              type: number
+                  tuesday:
+                     type: array
+                     required: true
+                     items:
+                        type: object
+                        properties:
+                           period:
+                              type: number
+                  wednesday:
+                     type: array
+                     required: true
+                     items:
+                        type: object
+                        properties:
+                           period:
+                              type: number
+                  thursday:
+                     type: array
+                     required: true
+                     items:
+                        type: object
+                        properties:
+                           period:
+                              type: number
+                  friday:
+                     type: array
+                     required: true
+                     items:
+                        type: object
+                        properties:
+                           period:
+                              type: number
+                  saturday:
+                     type: array
+                     required: true
+                     items:
+                        type: object
+                        properties:
+                           period:
+                              type: number
+            _id:
+               type: string
+            class:
+               required: true
+               type: ObjectId
+               description: 'id của class'
+            createdAt:
+               type: string
+            updatedAt:
+               type: string
+
+      Remark:
+         type: object
+         properties:
+            _id:
+               type: string
+            student:
+               type: ObjectId
+               required: true
+            schoolYear:
+               type: ObjectId
+               description: 'Năm học của đánh giá'
+            conduct:
+               type: string
+               required: true
+               enum:
+                  - Yếu
+                  - Trung bình
+                  - Khá
+                  - Tốt
+               description: 'Đánh giá phẩm chất'
+            proficiency:
+               type: string
+               required: true
+               enum:
+                  - Yếu
+                  - Trung bình
+                  - Khá
+                  - Tốt
+               description: 'Đánh giá phẩm chất'
+            remark:
+               type: string
+            remarkedBy:
+               type: ObjectId
+               required: true
+            createdAt:
+               type: Date
+               example: '2023-03-14T17:02:24.526+00:00'
+            updatedAt:
+               type: Date
+               example: '2023-03-14T17:02:24.526+00:00'
+
+      Article:
+         type: object
+         properties:
+            _id:
+               type: string
+               example: '637ec5ce577ebd6709c65124'
+            title:
+               type: string
+               description: 'Tiêu đề bản tin'
+               example: 'Thông báo BHYT'
+            content:
+               type: string
+               description: 'Nội dung'
+               example: '<p>Hello</p>'
+            synopsis:
+               type: string
+               description: 'Nội dung tóm tắt'
+               example: 'Thông báo'
+            userPosts:
+               type: string
+               description: 'Tên người đăng'
+               example: 'Compunctor_12'
+            userPicture:
+               type: string
+               description: 'Avatar người đăng'
+               example: 'https://lh3.googleusercontent.com/a/AAcHTted-AUwzxogw_PqbSLNNHJuVj8wN3h6gkuv2eSCEBA3Z9A=s96-c'
+            createdAt:
+               type: Date
+               example: '2023-03-14T17:02:24.526+00:00'
+            updatedAt:
+               type: Date
+               example: '2023-03-14T17:02:24.526+00:00'
+
+      HttpError:
+         type: object
+         properties:
+            message:
+               type: string
+            statusCode:
+               type: number
+
+      HttpResponse:
+         type: object
+         properties:
+            mesage:
+               type: string
+            statusCode:
+               type: number

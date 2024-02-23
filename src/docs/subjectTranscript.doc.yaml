@@ -1,0 +1,303 @@
+paths:
+   /transcripts/:classId/:subjectId:
+      put:
+         tags:
+            - Transcript
+         description: Api nhập điểm học sinh 1 lớp
+         summary: Đăng nhập với vai trò giáo viên bộ môn của lớp
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/SubjectTranscript'
+                  example:
+                     [
+                        {
+                           'student': '649b2b57fa0af79f71e3cac1',
+                           'firstSemester': { 'midtermTest': 8, 'finalTest': 9 },
+                           'secondSemester': { 'midtermTest': 6, 'finalTest': 6 },
+                           'remark': 'Học lực tốt, tiếp thu nhanh, tham gia xây dựng bài giảng nhiệt tình'
+                        },
+                        {
+                           'student': '649b2b57fa0af79f71e3cabe',
+                           'firstSemester': { 'midtermTest': 8, 'finalTest': 9 },
+                           'secondSemester': { 'midtermTest': 8, 'finalTest': 8 },
+                           'remark': 'Học lực tốt, tiếp thu nhanh, tham gia xây dựng bài giảng nhiệt tình'
+                        },
+                        {
+                           'student': '649b2b57fa0af79f71e3cabf',
+                           'firstSemester': { 'midtermTest': 6, 'finalTest': 9 },
+                           'secondSemester': { 'midtermTest': 8, 'finalTest': 7 },
+                           'remark': 'Học lực tốt, tiếp thu nhanh, tham gia xây dựng bài giảng nhiệt tình'
+                        },
+                        {
+                           'student': '649b2b57fa0af79f71e3cac0',
+                           'firstSemester': { 'midtermTest': 7, 'finalTest': 9 },
+                           'secondSemester': { 'midtermTest': 9, 'finalTest': 4 },
+                           'remark': 'Học lực tốt, tiếp thu nhanh, tham gia xây dựng bài giảng nhiệt tình'
+                        }
+                     ]
+
+         responses:
+            201:
+               description: Nhập điểm thành công
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           ok:
+                              type: number
+                           writeErrors:
+                              type: array
+                           writeConcernErrors:
+                              type: array
+                           insertedIds:
+                              type: array
+                           nInserted:
+                              type: number
+                           nUpserted:
+                              type: number
+                           nMatched:
+                              type: number
+                           nModified:
+                              type: number
+                           nRemoved:
+                              type: number
+                           upserted:
+                              type: array
+                           opTime:
+                              type: object
+                              properties:
+                                 ts:
+                                    type: object
+                                    properties:
+                                       $timestamp:
+                                          type: string
+                                 t:
+                                    type: number
+                     example:
+                        {
+                           'ok': 1,
+                           'writeErrors': [],
+                           'writeConcernErrors': [],
+                           'insertedIds': [],
+                           'nInserted': 0,
+                           'nUpserted': 0,
+                           'nMatched': 4,
+                           'nModified': 4,
+                           'nRemoved': 0,
+                           'upserted': [],
+                           'opTime': { 'ts': { '$timestamp': '7250933294286503947' }, 't': 138 }
+                        }
+            400:
+               description: 'Có thể do các nguyên nhân sau: id class hoặc subject không đúng type objectId, k thỏa mãn validate (cụ thể đọc ở message trả về)'
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        {
+                           'message': 'Transcript students fails to meet validation criteria!',
+                           'statusCode': 400,
+                           'error':
+                              [
+                                 {
+                                    'id': '641c92fd17e975b09d28d966',
+                                    'message': '"secondSemester.finalTest" must be a number'
+                                 }
+                              ]
+                        }
+
+            404:
+               description: Chưa tạo schoolYear năm nay hoặc student không tồn tại trong lớp học, class || subject không tồn tại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { 'message': 'Subject does not exist or has been deleted!', 'statusCode': 404 }
+   /transcripts/:classId:
+      get:
+         tags:
+            - Transcript
+         summary: Đăng nhập giới vai trò là giáo viên bộ môn của học sinh
+         description: Lấy tất cả bảng điểm của lớp học đó
+         responses:
+            200:
+               description: Lấy tất cả bảng điểm thành công
+               content:
+                  application/json:
+                     example:
+                        [
+                           {
+                              'student':
+                                 {
+                                    '_id': '6490a537831f042be2f93fa8',
+                                    'class': '645227dcf950ab74cb145cf1',
+                                    'fullName': 'Student 1'
+                                 },
+                              'transcript':
+                                 [
+                                    {
+                                       'subject': { '_id': '649889af052ac388b19db214', 'subjectName': 'Tiếng Việt' },
+                                       'firstSemester': { 'finalTest': 7 },
+                                       'secondSemester': { 'finalTest': 7 },
+                                       'isPassed': true,
+                                       'remark': 'none'
+                                    }
+                                 ]
+                           },
+                           {
+                              'student':
+                                 {
+                                    '_id': '6490a537831f042be2f93fa9',
+                                    'class': '645227dcf950ab74cb145cf1',
+                                    'fullName': 'Student 2'
+                                 },
+                              'transcript':
+                                 [
+                                    {
+                                       'subject': { '_id': '649889af052ac388b19db214', 'subjectName': 'Tiếng Việt' },
+                                       'firstSemester': { 'finalTest': 7 },
+                                       'secondSemester': { 'finalTest': 6 },
+                                       'isPassed': true,
+                                       'remark': 'none'
+                                    }
+                                 ]
+                           },
+                           {
+                              'student':
+                                 {
+                                    '_id': '6490a537831f042be2f93faa',
+                                    'class': '645227dcf950ab74cb145cf1',
+                                    'fullName': 'Student 3'
+                                 },
+                              'transcript':
+                                 [
+                                    {
+                                       'subject': { '_id': '649889af052ac388b19db214', 'subjectName': 'Tiếng Việt' },
+                                       'firstSemester': { 'finalTest': 6 },
+                                       'secondSemester': { 'finalTest': 5 },
+                                       'isPassed': false,
+                                       'remark': 'none'
+                                    }
+                                 ]
+                           }
+                        ]
+            400:
+               description: sai api hoặc Id lớp không tồn tại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { 'message': 'Invalid class ID', 'statusCode': 400 }
+
+   /transcripts/class/:classId/:subjectId:
+      get:
+         tags:
+            - Transcript
+         summary: Đăng nhập với vai trò giáo viên bộ môn của lớp
+         description: Api lấy ra bảng điểm của tất cả các học sinh của 1 môn học trong lớp
+
+         responses:
+            200:
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: '#/components/schemas/SubjectTranscript'
+
+                     example:
+                        [
+                           {
+                              'firstSemester': { 'midtermTest': 9, 'finalTest': 0 },
+                              'secondSemester': { 'midtermTest': 9, 'finalTest': 2 },
+                              '_id': '6425abc25a7e35876c4e48eb',
+                              'student':
+                                 {
+                                    '_id': '641c92fd17e975b09d28d965',
+                                    'class': '6410a8a01e0ac1f41b6ddc00',
+                                    'fullName': 'Lê Ngọc Đức 26',
+                                    'absentDays': [{ 'schoolYear': null }]
+                                 },
+                              'schoolYear':
+                                 {
+                                    '_id': '6424754208ab607d1323fa73',
+                                    'startAt': 2023,
+                                    'createdAt': '2023-03-29T17:28:34.575Z',
+                                    'updatedAt': '2023-03-29T17:28:34.575Z',
+                                    'endAt': 2024,
+                                    '__v': 0
+                                 },
+                              'subject': { '_id': '641af3f5346143e3ee6e0977', 'subjectName': 'Tiếng Anh' },
+                              'deleted': false,
+                              '__v': 0
+                           }
+                        ]
+
+            400:
+               description: Các param truyền lên không đúng kiểu objectId
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+
+                     example:
+                        { 'message': 'classId or subjectId is not in the correct ObjectId format', 'statusCode': 400 }
+
+   /transcripts/student/:id:
+      get:
+         tags:
+            - Transcript
+         description: Lấy ra bảng điểm tất cả các môn của  1 học sinh
+         summary: Đăng nhập với vai trò giáo viên chủ nhiệm hoặc phụ huynh học sinh
+         responses:
+            200:
+               description: Lấy ra thành công
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: '#/components/schemas/SubjectTranscript'
+
+                     example:
+                        [
+                           {
+                              'firstSemester': { 'midtermTest': 9, 'finalTest': 0 },
+                              'secondSemester': { 'midtermTest': 9, 'finalTest': 2 },
+                              '_id': '6425abc25a7e35876c4e48eb',
+                              'schoolYear':
+                                 {
+                                    '_id': '6424754208ab607d1323fa73',
+                                    'startAt': 2023,
+                                    'createdAt': '2023-03-29T17:28:34.575Z',
+                                    'updatedAt': '2023-03-29T17:28:34.575Z',
+                                    'endAt': 2024,
+                                    '__v': 0
+                                 },
+                              'subject': { '_id': '641af3f5346143e3ee6e0977', 'subjectName': 'Tiếng Anh' },
+                              'deleted': false,
+                              '__v': 0
+                           }
+                        ]
+
+            400:
+               description: Các param truyền lên không đúng kiểu objectId
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+
+                     example: { 'message': 'id student is not in the correct ObjectId format', 'statusCode': 400 }
+
+            404:
+               description: Học sinh không tồn tại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+
+                     example: { 'message': 'Student does not exist', 'statusCode': 404 }

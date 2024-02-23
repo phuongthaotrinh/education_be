@@ -1,0 +1,942 @@
+paths:
+   /students:
+      post:
+         tags:
+            - Students
+         summary: Đăng nhập với tư cách giáo viên chủ nhiệm lớp hoặc hiệu trưởng
+         description: Tạo mới 1 hoặc nhiểu student bằng cách gửi { } hoặc [ ]
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     properties:
+                        class:
+                           type: string
+                           required: true
+                        code:
+                           type: string
+                           require: true
+                        fullName:
+                           type: string
+                           required: true
+                           minLength: 6
+                           maxLength: 100
+                        gender:
+                           type: string
+                           required: true
+                        dateOfBirth:
+                           type: date
+                           required: true
+                        parentsPhoneNumber:
+                           type: string
+                           required: true
+                        isPolicyBeneficiary:
+                           type: boolean
+                        isGraduated:
+                           type: boolean
+                  example:
+                     {
+                        class: '6410a8a01e0ac1f41b6ddc00',
+                        fullName: 'Lê Ngọc Đức 5',
+                        gender: true,
+                        dateOfBirth: '10-13-2001',
+                        parentsPhoneNumber: '032856808888'
+                     }
+         responses:
+            200:
+               description: Student created successfully
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Student'
+                     example:
+                        {
+                           'class': '6410a8a01e0ac1f41b6ddc00',
+                           'fullName': 'Lê Ngọc Đức 5',
+                           'gender': true,
+                           'dateOfBirth': '2001-10-12T17:00:00.000Z',
+                           'parentsPhoneNumber': '032856808888',
+                           'isPolicyBeneficiary': false,
+                           'isGraduated': false,
+                           '_id': '641c986f5bc01247c99c3723',
+                           'deleted': false,
+                           'absentDays': [],
+                           'createdAt': '2023-03-23T18:20:31.120Z',
+                           'updatedAt': '2023-03-23T18:20:31.120Z',
+                           'code': '5lndBX8888',
+                           '__v': 0
+                        }
+            204:
+               description: Không nhận được request body
+            400:
+               description: Không thỏa mã validate
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpResponse'
+                     example:
+                        {
+                           statusCode: 400,
+                           message: The student does not satisfy the validation requirements,
+                           error:
+                              [
+                                 {
+                                    'fullName': 'Lê Ngọc Đức 5',
+                                    'parentPhone': '032856808888',
+                                    'message': '"gender" must be a boolean'
+                                 }
+                              ]
+                        }
+            413:
+               description: Thêm trên 50 học sinh cùng lúc
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpResponse'
+                     example: { statusCode: 413, message: You are only allowed to add 50 students at a time }
+            409:
+               description: Học sinh đã tồn tại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpResponse'
+                     example:
+                        {
+                           statusCode: 409,
+                           message: Student already exists,
+                           error: [{ 'fullName': 'Lê Ngọc Đức 5', 'parentPhone': '032856808888' }]
+                        }
+
+   /students/stop/:type:
+      get:
+         tags:
+            - Students
+         summary: Đăng nhập với tư cách là hiệu trưởng
+         description: Lấy ra danh sách học sinh chuyển trường hoặc nghỉ học theo năm
+         parameters:
+            - name: type
+              in: path
+              description: Lựa chọn hành động muốn thực hiện
+              required: true
+              schema:
+                 type: string
+                 enum:
+                    - transferSchool
+                    - dropout
+            - name: year
+              in: query
+              description: Lấy ra hs của năm ...
+              schema:
+                 type: number
+                 enum:
+                    - all
+                    - số năm truyền lên
+              default: năm hiện tại
+            - name: page
+              in: query
+              description: page phân trang
+              schema:
+                 type: number
+              default: 1
+            - name: limit
+              in: query
+              description: Số bản ghi của 1 page
+              schema:
+                 type: number
+              default: 10
+
+         responses:
+            200:
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/StudentResponse'
+                     example:
+                        {
+                           'docs':
+                              [
+                                 {
+                                    'dropoutDate': null,
+                                    '_id': '641c92fd17e975b09d28d965',
+                                    'code': '26lndBX8088',
+                                    'class': '6410a8a01e0ac1f41b6ddc00',
+                                    'fullName': 'Lê Ngọc Đức 26',
+                                    'gender': true,
+                                    'dateOfBirth': '2001-10-12T17:00:00.000Z',
+                                    'parentsPhoneNumber': '0328568088',
+                                    'isPolicyBeneficiary': false,
+                                    'isGraduated': false,
+                                    'deleted': false,
+                                    'absentDays': [],
+                                    '__v': 0,
+                                    'createdAt': '2023-03-23T17:57:17.057Z',
+                                    'updatedAt': '2023-03-24T14:28:15.228Z',
+                                    'transferSchool': '2023-03-23T17:00:00.000Z'
+                                 }
+                              ],
+                           'totalDocs': 1,
+                           'limit': 10,
+                           'totalPages': 1,
+                           'page': 1,
+                           'pagingCounter': 1,
+                           'hasPrevPage': false,
+                           'hasNextPage': false,
+                           'prevPage': null,
+                           'nextPage': null
+                        }
+
+            400:
+               description: Không nhận được type
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpResponse'
+                     example: { statusCode: 400, message: Type is not valid }
+
+   /students/:class:
+      get:
+         tags:
+            - Students
+         description: Lấy ra học sinh của 1 lớp
+         summary: Đăng nhập
+         parameters:
+            - name: classId
+              in: path
+              description: Id class muốn lấy học sinh
+              required: true
+              schema:
+                 type: string
+            - name: _order
+              in: query
+              description: Kiểu sắp xếp
+              schema:
+                 type: SortOrder
+                 enum:
+                    - asc
+                    - desc
+              default: desc
+            - name: _sort
+              in: query
+              description: sắp xếp theo thuộc tính _sort
+              schema:
+                 type: string
+                 enum:
+                    - code
+                    - fullName
+                    - gender
+                    - dateOfBirth
+                    - class
+                    - parentsPhoneNumber
+                    - isPolicyBeneficiary
+                    - isGraduated
+              default: fullName
+            - name: select
+              in: query
+              description: Thiết lập các thuộc tính muốn nhận được
+              schema:
+                 type: string
+              default: '-absentDays'
+            - name: page
+              in: query
+              description: page phân trang
+              schema:
+                 type: number
+              default: 1
+            - name: limit
+              in: query
+              description: Số bản ghi của 1 page
+              schema:
+                 type: number
+              default: 10
+         responses:
+            200:
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/StudentResponse'
+                     example:
+                        {
+                           'docs':
+                              [
+                                 {
+                                    'dropoutDate': null,
+                                    '_id': '641c92fd17e975b09d28d965',
+                                    'code': '26lndBX8088',
+                                    'class': '6410a8a01e0ac1f41b6ddc00',
+                                    'fullName': 'Lê Ngọc Đức 26',
+                                    'gender': true,
+                                    'dateOfBirth': '2001-10-12T17:00:00.000Z',
+                                    'parentsPhoneNumber': '0328568088',
+                                    'isPolicyBeneficiary': false,
+                                    'isGraduated': false,
+                                    'deleted': false,
+                                    'absentDays': [],
+                                    '__v': 0,
+                                    'createdAt': '2023-03-23T17:57:17.057Z',
+                                    'updatedAt': '2023-03-24T14:28:15.228Z',
+                                    'transferSchool': null
+                                 }
+                              ],
+                           'totalDocs': 1,
+                           'limit': 10,
+                           'totalPages': 1,
+                           'page': 1,
+                           'pagingCounter': 1,
+                           'hasPrevPage': false,
+                           'hasNextPage': false,
+                           'prevPage': null,
+                           'nextPage': null
+                        }
+
+            400:
+               description: Không đúng định dạng id hoặc _sort query không chính xác
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        {
+                           statusCode: 400,
+                           message: "_sort can only belong to ['code','fullName','gender','dateOfBirth','class','parentsPhoneNumber','isPolicyBeneficiary','isGraduated'] | _id of the class is invalid"
+                        }
+
+   /students/attendance:
+      get:
+         tags:
+            - Students
+         summary: Đăng nhập với vai trò HEADMASTER
+         description: Xem tình trạng diểm danh của toàn bộ trường học
+         parameters:
+            - in: query
+              name: page
+              default: 1
+              schema:
+                 type: number
+            - in: query
+              name: limit
+              default: 10
+              schema:
+                 type: number
+            - in: query
+              name: date
+              default: ngày hôm nay
+              schema:
+                 type: MM-DD-YYYY
+
+         responses:
+            200:
+               description: ok
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           docs:
+                              type: array
+                              items:
+                                 $ref: '#/components/schemas/Student'
+                           totalDocs:
+                              type: number
+                           limit:
+                              type: number
+                           totalPages:
+                              type: number
+                           page:
+                              type: number
+                           pagingCounter:
+                              type: number
+                           hasPrevPage:
+                              type: boolean
+                           hasNextPage:
+                              type: boolean
+                           prevPage:
+                              type: boolean
+                           nextPage:
+                              type: boolean
+                           classes:
+                              type: array
+                              items:
+                                 type: object
+                                 properties:
+                                    _id:
+                                       type: objectId
+                                    className:
+                                       type: string
+
+                     example:
+                        {
+                           'docs':
+                              [
+                                 {
+                                    '_id': '641c92fd17e975b09d28d965',
+                                    'code': '26lndBX8088',
+                                    'class': { '_id': '6410a8a01e0ac1f41b6ddc00', 'className': '2D' },
+                                    'fullName': 'Lê Ngọc Đức 26',
+                                    'gender': true,
+                                    'dateOfBirth': '2001-10-12T17:00:00.000Z',
+                                    'parentsPhoneNumber': '0328568088',
+                                    'isPolicyBeneficiary': true,
+                                    'isGraduated': false,
+                                    'deleted': false,
+                                    'absentDays':
+                                       [
+                                          {
+                                             'date': '2023-03-26T12:35:26.763Z',
+                                             'schoolYear': '641c92fd17e975b09d28d965',
+                                             'hasPermision': false,
+                                             'reason': 'Không có lý do',
+                                             '_id': '64203c0e3c9f823f7b3658b0'
+                                          }
+                                       ]
+                                 }
+                              ],
+                           'totalDocs': 2,
+                           'limit': 10,
+                           'totalPages': 1,
+                           'page': 1,
+                           'pagingCounter': 1,
+                           'hasPrevPage': false,
+                           'hasNextPage': false,
+                           'prevPage': null,
+                           'nextPage': null,
+                           'classes':
+                              [
+                                 { '_id': '6411c69762b26008cc29f38c', 'className': '1E' },
+                                 { '_id': '6410a8a01e0ac1f41b6ddc00', 'className': '2D' },
+                                 { '_id': '6411d40ac5b33ec866d3d5b5', 'className': '2E' },
+                                 { '_id': '6411c3529494c67a3a5ac6bf', 'className': '3D' },
+                                 { '_id': '6411c3529494c67a3a5ac6c0', 'className': '5C' }
+                              ]
+                        }
+
+   /students/policyBeneficiary:
+      get:
+         tags:
+            - Students
+         summary: đăng nhập với vai trò giáo viên
+         description: Lấy ra thông tin các học sinh thuộc diện chính sách (toàn trường)
+         parameters:
+            - in: query
+              name: page
+              default: 1
+              schema:
+                 type: number
+            - in: query
+              name: limit
+              default: 10
+              schema:
+                 type: number
+
+         responses:
+            200:
+               description: ok
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/StudentResponse'
+                     example:
+                        {
+                           'docs':
+                              [
+                                 {
+                                    'transferSchool': null,
+                                    'dropoutDate': null,
+                                    '_id': '641c92fd17e975b09d28d965',
+                                    'code': '26lndBX8088',
+                                    'class': '6410a8a01e0ac1f41b6ddc00',
+                                    'fullName': 'Lê Ngọc Đức 26',
+                                    'gender': true,
+                                    'dateOfBirth': '2001-10-12T17:00:00.000Z',
+                                    'parentsPhoneNumber': '0328568088',
+                                    'isPolicyBeneficiary': true,
+                                    'isGraduated': false,
+                                    'deleted': false,
+                                    '__v': 0,
+                                    'createdAt': '2023-03-23T17:57:17.057Z',
+                                    'updatedAt': '2023-03-28T16:35:40.838Z'
+                                 }
+                              ],
+                           'totalDocs': 2,
+                           'limit': 10,
+                           'totalPages': 1,
+                           'page': 1,
+                           'pagingCounter': 1,
+                           'hasPrevPage': false,
+                           'hasNextPage': false,
+                           'prevPage': null,
+                           'nextPage': null
+                        }
+
+   /students/attendance/:classId:
+      patch:
+         tags:
+            - Students
+         summary: Đăng nhập với vai trò là giáo viên
+         description: Api điểm danh lớp hằng ngày
+         requestBody:
+            description: Chỉ truyền lên các học sinh nghỉ học
+            content:
+               application/json:
+                  schema:
+                     type: array
+                     items:
+                        type: object
+                        properties:
+                           idStudent:
+                              type: string
+                              required: true
+                           absent:
+                              type: object
+                              properties:
+                                 hasPermision:
+                                    type: boolean
+                                 reason:
+                                    type: string
+                  example:
+                     [
+                        { 'idStudent': '641c92fd17e975b09d28d965', 'absent': { 'hasPermision': true } },
+                        { 'idStudent': '641c92fd17e975b09d28d966', 'absent': { reason: 'Lý do abc xyz' } }
+                     ]
+
+         responses:
+            201:
+               description: Điểm danh thành công
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           message:
+                              type: string
+                     example: { message: 'Attendance has been saved!' }
+
+            204:
+               description: Không nhận được body data hoặc rỗng
+
+            400:
+               description: Không thỏa mãn validate hoặc body data không phải array
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        {
+                           'message': 'The body data does not satisfy the validation',
+                           'statusCode': 400,
+                           'error':
+                              [
+                                 { 'message': 'idStudent of the student is invalid' },
+                                 { 'id': '641c92fd17e975b09d28d966', 'message': 'idStudent of the student is invalid' }
+                              ]
+                        }
+
+            404:
+               description: Student nghỉ gửi lên không nằm trong lớp cần điểm danh
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        {
+                           'message': 'This student does not exist in the class',
+                           'statusCode': 404,
+                           'error': "['6420265eb862c25f87f321c2']"
+                        }
+
+            409:
+               description: Học sinh vắng gửi lên đã được điểm danh trong ngày hôm nay
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        {
+                           'message': "Today's attendance for the student already exists",
+                           'statusCode': 409,
+                           'error':
+                              [
+                                 { 'message': 'idStudent of the student is invalid' },
+                                 { 'id': '641c92fd17e975b09d28d966', 'name': 'Lê Ngọc Đức 123' }
+                              ]
+                        }
+
+      get:
+         tags:
+            - Students
+         description: Api lấy ra tình trạng điểm danh của 1 lớp theo ngày
+         summary: Đăng nhập với vai trò là giáo viên
+         parameters:
+            - in: query
+              name: date
+              description: ngày cần lấy điểm danh
+              schema:
+                 type: MM-DD-YYYY
+              default: ngày hiện tại
+
+         responses:
+            200:
+               description: Lấy thành công
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           absent:
+                              type: number
+                           students:
+                              type: array
+                              items:
+                                 type: object
+                                 properties:
+                                    _id:
+                                       type: ObjectId
+                                    code:
+                                       type: string
+                                    fullName:
+                                       type: string
+                                       required: true
+                                    gender:
+                                       type: boolean
+                                       required: true
+                                    dateOfBirth:
+                                       type: Date
+                                       required: true
+                                    class:
+                                       type: ObjectId
+                                       required: true
+                                    parentsPhoneNumber:
+                                       type: string
+                                       required: true
+                                    isPolicyBeneficiary:
+                                       type: boolean
+                                    isGraduated:
+                                       type: boolean
+                                    dropoutDate:
+                                       type: Date | null
+                                    transferSchool:
+                                       type: Date | null
+                                    attendanceStatus:
+                                       type: boolean
+                     example:
+                        {
+                           'absent': 2,
+                           'students':
+                              [
+                                 {
+                                    '_id': '641c92fd17e975b09d28d965',
+                                    'code': '26lndBX8088',
+                                    'class': '6410a8a01e0ac1f41b6ddc00',
+                                    'fullName': 'Lê Ngọc Đức 26',
+                                    'gender': true,
+                                    'dateOfBirth': '2001-10-12T17:00:00.000Z',
+                                    'parentsPhoneNumber': '0328568088',
+                                    'isPolicyBeneficiary': false,
+                                    'isGraduated': false,
+                                    'deleted': false,
+                                    '__v': 0,
+                                    'createdAt': '2023-03-23T17:57:17.057Z',
+                                    'updatedAt': '2023-03-26T12:36:37.118Z',
+                                    'transferSchool': '2023-03-23T17:00:00.000Z',
+                                    'attendanceStatus': false
+                                 }
+                              ]
+                        }
+
+            400:
+               description: idClass không tồn tại hoặc không đúng định dạng objectId
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 400, message: The provided idClass is invalid }
+
+   /students/attendance/student/:id:
+      get:
+         tags:
+            - Students
+         description: Lấy ra tình trạng điểm danh của 1 học sinh cụ thể
+         summary: Đăng nhập với vai trò phụ huynh học sinh hoặc giáo viên
+         parameters:
+            - in: query
+              name: month
+              description: tháng cần lấy
+              schema:
+                 type: number
+              default: tháng hiện tại
+            - in: query
+              name: year
+              description: năm cần lấy
+              schema:
+                 type: number
+              default: năm hiện tại
+
+         responses:
+            200:
+               description: Trả về tình trạng điểm danh của những ngày nghỉ, rỗng là không nghỉ buổi nào
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Attendance'
+                     example:
+                        [
+                           {
+                              'date': '2023-03-26T12:35:26.763Z',
+                              'schoolYear': null,
+                              'hasPermision': false,
+                              'reason': 'Không có lý do',
+                              '_id': '64203c0e3c9f823f7b3658b0'
+                           }
+                        ]
+
+            xxx:
+               description: Các lỗi có thể xảy ra trong api get student detail
+
+   /students/services/:id:
+      patch:
+         tags:
+            - Students
+         description: Chuyển trạng thái 1 học sinh thành đã nghỉ học hoặc chuyển trường
+         summary: Đăng nhập với vai trò HEADMASTER
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     properties:
+                        type:
+                           type: string
+                           enum:
+                              - transferSchool
+                              - dropout
+                        date:
+                           type: date
+
+                  example: { type: transferSchool, date: '03-24-2023' }
+
+         responses:
+            201:
+               description: Cập nhập thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Student'
+                     example:
+                        {
+                           'dropoutDate': null,
+                           '_id': '641c92fd17e975b09d28d965',
+                           'code': '26lndBX8088',
+                           'class': '6410a8a01e0ac1f41b6ddc00',
+                           'fullName': 'Lê Ngọc Đức 26',
+                           'gender': true,
+                           'dateOfBirth': '2001-10-12T17:00:00.000Z',
+                           'parentsPhoneNumber': '0328568088',
+                           'isPolicyBeneficiary': false,
+                           'isGraduated': false,
+                           'deleted': false,
+                           'absentDays': [],
+                           '__v': 0,
+                           'createdAt': '2023-03-23T17:57:17.057Z',
+                           'updatedAt': '2023-03-24T14:28:15.228Z',
+                           'transferSchool': null
+                        }
+            400:
+               description: Truyền type không chính xác hoặc id || date không đúng định dạng
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        {
+                           statusCode: 400,
+                           message: 'Type is not valid | _id of the student is invalid | The Date you passed is not in the correct Date data type'
+                        }
+
+            404:
+               description: Học sinh đã chuyển đi hoặc nghỉ học
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        { statusCode: 400, message: 'The student has transferred to another school or dropped out' }
+
+   /students/:id:
+      patch:
+         tags:
+            - Students
+         description: Cập nhập lại thông tin của 1 học sinh
+         summary: Đăng nhập với vai trò giáo viên chủ nhiệm lớp
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     properties:
+                        class:
+                           type: ObjectId
+                           required: true
+                        code:
+                           type: string
+                           required: true
+                        fullName:
+                           type: string
+                           required: true
+                           minLength: 6
+                           maxLength: 100
+                        gender:
+                           type: boolean
+                           require: true
+                        dateOfBirth:
+                           type: Date
+                           require: true
+                        parentsPhoneNumber:
+                           type: string
+                           require: true
+                           pattern: '/^(?:\+84|0)(?:1\d{9}|3\d{8}|5\d{8}|7\d{8}|8\d{8}|9\d{8})$/'
+                        isPolicyBeneficiary:
+                           type: boolean
+                        isGraduated:
+                           type: boolean
+
+                  example: { 'fullName': 'Lê Ngọc Đức 26', 'gender': true, 'parentsPhoneNumber': '0328568088' }
+
+         responses:
+            201:
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Student'
+                     example:
+                        {
+                           'dropoutDate': null,
+                           '_id': '641c92fd17e975b09d28d965',
+                           'code': '26lndBX8088',
+                           'class': '6410a8a01e0ac1f41b6ddc00',
+                           'fullName': 'Lê Ngọc Đức 26',
+                           'gender': true,
+                           'dateOfBirth': '2001-10-12T17:00:00.000Z',
+                           'parentsPhoneNumber': '0328568088',
+                           'isPolicyBeneficiary': false,
+                           'isGraduated': false,
+                           'deleted': false,
+                           'absentDays': [],
+                           '__v': 0,
+                           'createdAt': '2023-03-23T17:57:17.057Z',
+                           'updatedAt': '2023-03-24T14:28:15.228Z',
+                           'transferSchool': null
+                        }
+
+            204:
+               description: Data body rỗng
+            304:
+               description: Dữ liệu thay đổi giống dữ liệu tồn tại trong database
+            400:
+               description: Không thỏa mã validate hoặc id không đúng type objectId
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 400, message: '_id of the student is invalid | "gender" must be a boolean' }
+            404:
+               description: Học sinh không tồn tại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 404, message: 'Student does not exist!' }
+
+   /students/detail/:id:
+      get:
+         tags:
+            - Students
+         description: Lấy ra đầy đủ thông tin một học sinh
+         summary: Đăng nhập với vai trò phụ huynh học sinh hoặc giáo viên
+
+         responses:
+            200:
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           info:
+                              $ref: '#/components/schemas/Student'
+                           transcript:
+                              $ref: '#/components/schemas/SubjectTranscript'
+
+                     example:
+                        {
+                           'info':
+                              {
+                                 'transferSchool': null,
+                                 'dropoutDate': null,
+                                 '_id': '641c92fd17e975b09d28d965',
+                                 'code': '26lndBX8088',
+                                 'class':
+                                    {
+                                       '_id': '6410a8a01e0ac1f41b6ddc00',
+                                       'className': '2D',
+                                       'headTeacher': '637ec5ce577ebd6709c65124'
+                                    },
+                                 'fullName': 'Lê Ngọc Đức 26',
+                                 'gender': true,
+                                 'dateOfBirth': '2001-10-12T17:00:00.000Z',
+                                 'parentsPhoneNumber': '0328568088',
+                                 'isPolicyBeneficiary': true,
+                                 'isGraduated': false,
+                                 'deleted': false,
+                                 'absentDays':
+                                    [
+                                       {
+                                          'date': '2023-03-26T12:35:26.763Z',
+                                          'schoolYear': null,
+                                          'hasPermision': false,
+                                          'reason': 'Không có lý do',
+                                          '_id': '64203c0e3c9f823f7b3658b0'
+                                       }
+                                    ],
+                                 '__v': 0,
+                                 'createdAt': '2023-03-23T17:57:17.057Z',
+                                 'updatedAt': '2023-03-28T16:35:40.838Z'
+                              },
+                           'transcript':
+                              [
+                                 {
+                                    'firstSemester': { 'midtermTest': 9, 'finalTest': 0 },
+                                    'secondSemester': { 'midtermTest': 9, 'finalTest': 2 },
+                                    '_id': '6425abc25a7e35876c4e48eb',
+                                    'schoolYear':
+                                       {
+                                          '_id': '6424754208ab607d1323fa73',
+                                          'startAt': 2023,
+                                          'createdAt': '2023-03-29T17:28:34.575Z',
+                                          'updatedAt': '2023-03-29T17:28:34.575Z',
+                                          'endAt': 2024,
+                                          '__v': 0
+                                       },
+                                    'subject': { '_id': '641af3f5346143e3ee6e0977', 'subjectName': 'Tiếng Anh' },
+                                    'deleted': false,
+                                    '__v': 0
+                                 }
+                              ]
+                        }
+
+            400:
+               description: Id không đúng định dạng hoặc không nhận được id
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 400, message: '_id of the student is invalid' }
+
+            404:
+               description: Học sinh không tồn tại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 404, message: 'Student does not exist!' }

@@ -1,0 +1,173 @@
+paths:
+   /school-years:
+      get:
+         tags:
+            - SchoolYears
+         description: Lấy ra tất cả các năm học
+         summary: Đăng nhập
+         parameters:
+            - in: query
+              name: page
+              default: 1
+              schema:
+                 type: number
+            - in: query
+              name: limit
+              default: 10
+              schema:
+                 type: number
+
+         responses:
+            200:
+               description: Lấy thành công tất cả các năm học
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/SchoolYearResponse'
+                     example:
+                        {
+                           'docs':
+                              [
+                                 {
+                                    '_id': '649419f8a90d72fae8079d53',
+                                    'name': 'NĂM HỌC 2021-2022',
+                                    'startAt': '2021-09-02T00:00:00.000Z',
+                                    'endAt': '2022-05-30T00:00:00.000Z',
+                                    'createdAt': '2023-06-22T06:06:52.325Z',
+                                    'updatedAt': '2023-06-22T08:52:03.485Z'
+                                 },
+                                 {
+                                    '_id': '6493e4fc7b4f808ce2e4cdcb',
+                                    'name': 'NĂM HỌC 2022-2023',
+                                    'startAt': '2022-06-01T00:00:00.000Z',
+                                    'endAt': '2023-05-30T00:00:00.000Z',
+                                    'createdAt': '2023-06-22T06:06:52.325Z',
+                                    'updatedAt': '2023-06-22T11:09:54.819Z'
+                                 },
+                                 {
+                                    '_id': '649883f6d03e98d721f64307',
+                                    'name': 'NĂM HỌC 2023-2024',
+                                    'startAt': '2023-06-25T14:30:00.000Z',
+                                    'endAt': '2024-06-25T14:30:00.000Z',
+                                    'createdAt': '2023-06-25T18:14:14.260Z',
+                                    'updatedAt': '2023-06-25T18:14:14.260Z'
+                                 }
+                              ],
+                           'totalDocs': 3,
+                           'limit': 10,
+                           'totalPages': 1,
+                           'page': 1,
+                           'pagingCounter': 1,
+                           'hasPrevPage': false,
+                           'hasNextPage': false,
+                           'prevPage': null,
+                           'nextPage': null
+                        }
+
+      post:
+         tags:
+            - SchoolYears
+         summary: Đăng nhập với vai trò HEADMASTER
+         description: Tạo mới 1 năm học
+         responses:
+            201:
+               description: Tạo mới năm học thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/SchoolYear'
+                     example:
+                        {
+                           'name': 'NĂM HỌC 2023-2024',
+                           'startAt': '2023-06-01T00:00:00.000Z',
+                           'endAt': '2024-06-01T00:00:00.000Z',
+                           '_id': '649970b07a2e5244e9d253c5',
+                           'createdAt': '2023-06-26T11:04:16.800Z',
+                           'updatedAt': '2023-06-26T11:04:16.800Z'
+                        }
+            400:
+               description: Năm học hiện tại chưa kết thúc
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        { message: 'Current school year has not finished, please comeback later!', statusCode: 400 }
+            409:
+               description: Tên năm học năm đã tồn tại trong db
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: "School year's name already existed!", statusCode: 409 }
+
+   /school-years/current:
+      get:
+         tags:
+            - SchoolYears
+         description: Lấy ra năm học hiện tại
+         summary: Lấy ra năm học hiện tại
+
+         responses:
+            200:
+               description: Lấy ra năm học hiện tại thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/SchoolYear'
+                     example:
+                        {
+                           '_id': '649970b07a2e5244e9d253c5',
+                           'name': 'NĂM HỌC 2023-2024',
+                           'startAt': '2023-06-01T00:00:00.000Z',
+                           'endAt': '2024-06-01T00:00:00.000Z',
+                           'createdAt': '2023-06-26T11:04:16.800Z',
+                           'updatedAt': '2023-06-26T11:04:16.800Z'
+                        }
+
+            404:
+               description: Năm học hiện tại chưa được tạo
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        {
+                           'message': 'The new academic year has not started yet, please come back later',
+                           'statusCode': 404
+                        }
+   /school-years/:id:
+      patch:
+         tags:
+            - SchoolYears
+         description: Chỉnh sửa 1 năm học
+         responses:
+            201:
+               description: Chỉnh sửa 1 năm học thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/SchoolYear'
+                     example:
+                        {
+                           '_id': '6493e4fc7b4f808ce2e4cdcb',
+                           'name': 'NĂM HỌC 2022-2023',
+                           'startAt': '2022-06-01T00:00:00.000Z',
+                           'endAt': '2023-04-01T00:00:00.000Z',
+                           'createdAt': '2023-06-22T06:06:52.325Z',
+                           'updatedAt': '2023-06-26T12:10:27.759Z'
+                        }
+            400:
+               description: Dữ liệu gửi lên không đúng định dạng yêu cầu
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { 'message': '"endAt" must be greater than "ref:startAt"', 'statusCode': 400 }
+            409:
+               description: Tên năm học năm đã tồn tại trong db
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'School year name already existed!', statusCode: 409 }

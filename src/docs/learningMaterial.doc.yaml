@@ -1,0 +1,167 @@
+paths:
+   /learning-materials:
+      get:
+         tags:
+            - Learning Material
+         summary: Lấy tất cả file học liệu đã lưu trữ theo môn hoặc & khối lớp
+         parameters:
+            - in: query
+              name: _sort
+              type: string
+              description: Fields to sort
+            - in: query
+              name: _order
+              type: string
+              description: Order to sort
+            - in: query
+              name: page
+              type: interger
+              description: Page of data
+            - in: query
+              name: limit
+              type: interger
+              description: Maximum document returns each page
+         responses:
+            200:
+               description: ok
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/LearningMaterial'
+                     example:
+                        {
+                           docs:
+                              [
+                                 {
+                                    _id: 64288eeb7b25b5141a3ad480,
+                                    subject: { _id: 64288eeb7b25b5141a3ad4x0, subjectName: Toán },
+                                    grade: 1,
+                                    fileName: code.png,
+                                    mimeType: image/png,
+                                    downloadUrl: https://drive.google.com/uc?export=download&id=undefined,
+                                    deleted: false,
+                                    __v: 0
+                                 }
+                              ],
+                           totalDocs: 1,
+                           limit: 20,
+                           totalPages: 1,
+                           page: 1,
+                           pagingCounter: 1,
+                           hasPrevPage: false,
+                           hasNextPage: false,
+                           prevPage: null,
+                           nextPage: null
+                        }
+
+            404:
+               description: Not found
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: Not found, statusCode: 404 }
+
+   /learning-materials/upload:
+      post:
+         tags:
+            - Learning Material
+         summary: Upload file học liệu lên Google Drive
+         requestBody:
+            parameters:
+            content:
+               multipart/form-data:
+                  schema:
+                     properties:
+                        subject:
+                           type: string
+                           requried: true
+                        grade:
+                           type: number
+                           required: true
+                        file:
+                           type: file
+                           requried: true
+                           format: binary
+         responses:
+            201:
+               description: Uploaded!
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/LearningMaterial'
+                     example:
+                        {
+                           subject: '642896b57842f599d92872x8',
+                           grade: 1,
+                           fileId: 1DMRA6NiYBSSZU_FUVeITZ6ne3xrLn786,
+                           fileName: code.png,
+                           mimeType: image/png,
+                           downloadUrl: https://drive.google.com/uc?export=download&id=1DMRA6NiYBSSZU_FUVeITZ6ne3xrLn786,
+                           _id: 642896b57842f599d9287258,
+                           deleted: false,
+                           __v: 0
+                        }
+
+   /learning-materials/:fileId/edit:
+      patch:
+         tags:
+            - Learning Material
+         summary: Edit thông tin học liệu
+         parameters:
+            - in: paths
+              name: fileId
+              type: string
+              required: true
+         requestBody:
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/LearningMaterial'
+         responses:
+            200:
+               description: Edit successfully!
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/LearningMaterial'
+                     example:
+                        {
+                           subject: '642896b57842f599d92872x8',
+                           grade: 1,
+                           fileId: 1DMRA6NiYBSSZU_FUVeITZ6ne3xrLn786,
+                           fileName: code.png,
+                           mimeType: image/png,
+                           downloadUrl: https://drive.google.com/uc?export=download&id=1DMRA6NiYBSSZU_FUVeITZ6ne3xrLn786,
+                           _id: 642896b57842f599d9287258,
+                           deleted: false,
+                           __v: 0
+                        }
+            400:
+               description: Bad Request
+            401:
+               description: Unauthorized
+            500:
+               description: Internal Server Error (Some error from backend)
+
+   /learning-materials/:fileId/delete:
+      delete:
+         tags:
+            - Learning Material
+         summary: Xóa cứng hoặc xóa mềm file học liệu
+         parameters:
+            - in: query
+              name: hard_delete
+              type: boolean
+              default: false
+            - in: path
+              name: fileId
+              type: string
+              required: true
+         responses:
+            204:
+               description: No Content (Deleted successfully!)
+            401:
+               description: Unauthorized
+            500:
+               description: Internal Server Error (Some error from backend)

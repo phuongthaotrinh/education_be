@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<script src="https://cdn.tailwindcss.com"></script>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css" />
+		<script>
+			tailwind.config = {
+				extends: {
+					screens: {
+						xs: {
+							min: '300px'
+						},
+						sm: {
+							min: '375px'
+						},
+
+						md: {
+							min: '768px'
+						},
+						lg: {
+							min: '1024px',
+							max: '1365px'
+						},
+						xl: { min: '1366px' },
+						xxl: { min: '1920px' }
+					}
+				}
+			}
+		</script>
+	</head>
+	<style>
+		@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200&display=swap');
+	</style>
+	<body>
+		<div class="flex flex-col items-center justify-center h-screen w-screen">
+			<div class="sm:shadow-lg xl:shadow-2xl rounded-lg p-6 flex flex-col gap-6 items-center">
+				<h3 class="text-center font-medium text-2xl mb-6">
+					<i class="bi bi-check-circle text-green-400 text-gray-800"></i>
+					Tài khoản đã được kích hoạt
+				</h3>
+
+				<p class="text-8xl text-cyan-300 text-center mb-6 text">
+					<i class="bi bi-envelope-check-fill"></i>
+				</p>
+
+				<p class="text-center mb-6 text-lg text-gray-700">
+					Cảm ơn bạn, Email của bạn đã được xác thực và tài khoản đã được khích hoạt thành công. <br />
+					Sử dụng đường link dưới đây để tiếp tục đăng nhập vào hệ thống
+				</p>
+
+				<a
+					href="http://localhost:3000/signin"
+					class="bg-indigo-500 text-white focus:active:bg-indigo-700 bg-cyan-300 hover:bg-indigo-600 px-4 py-3 duration-200 rounded-md capitalize font-medium w-fit"
+					>Đăng nhập</a
+				>
+			</div>
+		</div>
+	</body>
+</html>

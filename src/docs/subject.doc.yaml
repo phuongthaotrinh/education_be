@@ -1,0 +1,220 @@
+paths:
+   /subjects:
+      post:
+         tags:
+            - Subjects
+         description: Thêm 1 subject
+         summary: Đăng nhập với vai trò Headmaster
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     properties:
+                        subjectName:
+                           type: string
+                        subjectCode:
+                           type: string
+                        isMainSubject:
+                           type: boolean
+                        isElectiveSubject:
+                           type: boolean
+                  example:
+                     {
+                        'subjectName': 'Giáo Dục Thể Chất',
+                        'subjectCode': 'GDTC-C1',
+                        'isMainSubject': false,
+                        'isElectiveSubject': true
+                     }
+
+         responses:
+            201:
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Subject'
+                     example:
+                        {
+                           'subjectName': 'Môn Tết',
+                           'subjectCode': 'TE-C2',
+                           'appliedForGrades': [1, 2, 3, 4, 5],
+                           'isMainSubject': false,
+                           'isElectiveSubject': false,
+                           '_id': '64a050bacfded534c734183f',
+                           'deleted': false,
+                           'createdAt': '2023-07-01T16:13:46.769Z',
+                           'updatedAt': '2023-07-01T16:13:46.769Z'
+                        }
+            204:
+               description: Không nhận được request body
+            400:
+               description: Không thỏa mãn validate
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 400, message: '\"subjectName\" length must be at least 3 characters long' }
+            409:
+               description: Subject đã tồn tại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 409, message: 'Subject already exists' }
+      get:
+         tags:
+            - Subjects
+         description: Lấy ra tất cả các subject
+         summary: Đăng nhập với vai trò Headmaster
+         responses:
+            200:
+               description: ok
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: '#/components/schemas/Subject'
+                     example:
+                        [
+                           {
+                              'deleted': false,
+                              '_id': '649889d3f132383b190244e5',
+                              'subjectName': 'Giáo Dục Thể Chất',
+                              'subjectCode': 'GDTC-C1',
+                              'appliedForGrades': [1, 2, 3, 4, 5],
+                              'isMainSubject': false,
+                              'isElectiveSubject': false,
+                              'createdAt': '2023-06-25T18:39:15.215Z',
+                              'updatedAt': '2023-06-25T18:42:44.726Z'
+                           },
+                           {
+                              'deleted': false,
+                              '_id': '64988b534c9bcbc4a30990ed',
+                              'subjectName': 'Hoạt Động Trải Nghiệm',
+                              'subjectCode': 'NDTN-C1',
+                              'appliedForGrades': [1, 2, 3, 4, 5],
+                              'isMainSubject': false,
+                              'isElectiveSubject': false,
+                              'createdAt': '2023-06-25T18:45:39.422Z',
+                              'updatedAt': '2023-06-25T18:45:39.422Z'
+                           }
+                        ]
+
+   /subjects/:id:
+      patch:
+         tags:
+            - Subjects
+         description: Update lại 1 subject
+         summary: Đăng nhập với vai trò Headmaster
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     type: object
+                     properties:
+                        subjectName:
+                           type: string
+                  example: { subjectName: 'Tiếng Việt' }
+
+         responses:
+            201:
+               description: Sửa thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Subject'
+                     example:
+                        {
+                           '_id': '64a050bacfded534c734183f',
+                           'subjectName': 'Môn Testt',
+                           'subjectCode': 'TE-C2',
+                           'appliedForGrades': [1, 2, 3, 4, 5],
+                           'isMainSubject': false,
+                           'isElectiveSubject': false,
+                           'deleted': false,
+                           'createdAt': '2023-07-01T16:13:46.769Z',
+                           'updatedAt': '2023-07-01T16:32:16.792Z'
+                        }
+            204:
+               description: Không nhận được data (req body)
+            400:
+               description: Không truyền id hoặc không thỏa mãn validate
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        {
+                           statusCode: 400,
+                           message: 'Missing parameter | "subjectName" length must be at least 3 characters long'
+                        }
+            404:
+               description: Subject không tồn tại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 404, message: Subject does not exist }
+      delete:
+         tags:
+            - Subjects
+         description: Xóa mềm hoặc xóa vĩnh viễn 1 subject
+         summary: Đăng nhập với vai trò Headmaster
+         parameters:
+            - name: option
+              in: query
+              description: Xác định kiểu xóa
+              schema:
+                 type: string
+                 enum:
+                    - soft
+                    - force
+              default: soft
+
+         responses:
+            200:
+               description: Xóa thành công
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           message:
+                              type: string
+                     example:
+                        { message: Subject has been permanently deleted(force) | moved the subject to the trash(soft) }
+            400:
+               description: id không đúng type objectId
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { statusCode: 400, message: '_id of the subject is invalid' }
+      get:
+         tags:
+            - Subjects
+         description: Lấy subject theo id
+         summary: Đăng nhập với vai trò Headmaster
+         responses:
+            200:
+               description: Lấy ra subject theo id thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Subject'
+                     example:
+                        {
+                           '_id': '64a050bacfded534c734183f',
+                           'subjectName': 'Môn Testt',
+                           'subjectCode': 'TE-C2',
+                           'appliedForGrades': [1, 2, 3, 4, 5],
+                           'isMainSubject': false,
+                           'isElectiveSubject': false,
+                           'deleted': false,
+                           'createdAt': '2023-07-01T16:13:46.769Z',
+                           'updatedAt': '2023-07-01T16:32:16.792Z'
+                        }

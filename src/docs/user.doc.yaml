@@ -1,0 +1,719 @@
+paths:
+   /auth/google:
+      get:
+         tags:
+            - Auth
+         summary: Đăng nhập với Google.
+         responses:
+            200:
+               description: Redirect đến page signin/success của client -> call api `{{baseUrl}}/auth/user` lấy thông tin user đăng nhập
+
+   /auth/user:
+      get:
+         tags:
+            - Auth
+         summary: Lấy thông tin User đã đăng nhập.
+         responses:
+            200:
+               description: Ok
+               content:
+                  application/json:
+                     schema:
+                        type: object
+                        properties:
+                           accessToken:
+                              type: string
+                              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoIjoiMTgyYTExYzIyY2M1YmJiMWVkNjY5ZWRkYmRkZjBiNDZjMjYxMDA4YmIxZDRkMzllIiwiaWF0IjoxNjc4MjAyMzIzLCJleHAiOjE2NzgyMDU5MjN9.SsBcxJH5QN36QWvbaJl4epl7kTmzFCxUTkf1Rto683g'
+                           user:
+                              type: object
+                              example:
+                                 {
+                                    _id: '5ffceda8cfc3ee8f0b3a507d',
+                                    displayName: 'Adminstrator',
+                                    picture: 'https://ui-avatars.com/api/?name=a'
+                                 }
+
+            404:
+               description: Account does not exist
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+
+   /auth/signout:
+      get:
+         tags:
+            - Auth
+         summary: Đăng xuất
+         description: Đăng xuất khỏi hệ thống
+         responses:
+            202:
+               description: Đã đăng xuất
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpResponse'
+                     example: { message: 'Signed out!', statusCode: 202 }
+            400:
+               description: Thu hồi token không thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Failed to revoke token', statusCode: 400 }
+            500:
+               description: Không thể đăng xuất
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: Không thể đăng xuất, statusCode: 500 }
+   /auth/verify-account:
+      get:
+         tags:
+            - Auth
+         summary: Xác minh tài khoản hệ thống
+         description:
+         responses:
+            401:
+               description: Mã thông báo truy cập phải được cung cấp!
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Access token must be provided!', statusCode: 401 }
+   /auth/send-otp:
+      post:
+         tags:
+            - Auth
+         summary: Gửi mã otp
+         description: Gửi 1 mã otp đến sms
+         requestBody:
+            type: object
+            content:
+               application/json:
+                  schema:
+                     properties:
+                        phone:
+                           type: string
+                  example: { 'phone': '0965115792' }
+         responses:
+            200:
+               description: Gửi sms thành công
+               content:
+                  application/json:
+                     schema:
+                        properties:
+                           messages:
+                              type: array
+                              items:
+                                 type: object
+                                 properties:
+                                    to:
+                                       type: string
+                                    message-id:
+                                       type: string
+                                    status:
+                                       type: string
+                                    remaining-balance:
+                                       type: string
+                                    message-price:
+                                       type: string
+                                    network:
+                                       type: string
+                                    messageId:
+                                       type: string
+                                    remainingBalance:
+                                       type: string
+                                    messagePrice:
+                                       type: string
+                           message-count:
+                              type: string
+                           messageCount:
+                              type: string
+                     example:
+                        {
+                           'messages':
+                              [
+                                 {
+                                    'to': '84965115792',
+                                    'message-id': 'ee606cfa-953a-498f-be50-01e56b8f4444',
+                                    'status': '0',
+                                    'remaining-balance': '1.23583334',
+                                    'message-price': '0.08230000',
+                                    'network': '45204',
+                                    'messageId': 'ee606cfa-953a-498f-be50-01e56b8f4444',
+                                    'remainingBalance': '1.23583334',
+                                    'messagePrice': '0.08230000'
+                                 }
+                              ],
+                           'message-count': '1',
+                           'messageCount': '1'
+                        }
+            404:
+               description: Số điện thoại của người dùng không tồn tại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: "User's phone number does not exist!", statusCode: 404 }
+            500:
+               description: Gửi sms thất bại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Failed to send sms!', statusCode: 500 }
+   /auth/refresh-token:
+      get:
+         tags:
+            - Auth
+         summary: Lấy access token mới.
+         responses:
+            200:
+               description: Ok
+               content:
+                  application/json:
+                     schema:
+                        properties:
+                           refreshToken:
+                              type: string
+                           message:
+                              type: string
+                           statusCode:
+                              type: number
+                     example:
+                        {
+                           refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRoIjoiMTgyYTExYzIyY2M1YmJiMWVkNjY5ZWRkYmRkZjBiNDZjMjYxMDA4YmIxZDRkMzllIiwiaWF0IjoxNjc4MjAyMzIzLCJleHAiOjE2NzgyMDU5MjN9.SsBcxJH5QN36QWvbaJl4epl7kTmzFCxUTkf1Rto683g',
+                           message: 'ok',
+                           statusCode: 200
+                        }
+            400:
+               description: Bad request - refresh token không hợp lệ
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Invalid refresh token!', statusCode: 400 }
+            403:
+               description: payload trong token không hợp lệ
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Invalid token payload', statusCode: 403 }
+   /users/create-teacher-account:
+      post:
+         tags:
+            - User
+         summary: Tạo mới giáo viên (chỉ có User role là Headmaster mới tạo được)
+         description: Trả về thông tin tài khoản giáo viên và gửi mật khẩu về mail cho giáo viên
+         requestBody:
+            type: object
+            content:
+               application/json:
+                  schema:
+                     properties:
+                        email:
+                           type: string
+                           regex: '/^[\w.+\-]+@gmail\.com$/'
+                           required: true
+                        displayName:
+                           type: string
+                           required: true
+                        gender:
+                           type: string
+                           required: true
+                           format: uppercase
+                           enum:
+                              - nam
+                              - nữ
+                        dateOfBirth:
+                           type: Date
+                           required: true
+                        phone:
+                           type: string
+                           min: 10
+                           max: 11
+                           required: true
+                        eduBackground:
+                           type: object
+                           properties:
+                              universityName:
+                                 type: string
+                                 required: true
+                              graduatedAt:
+                                 type: date
+                                 required: true
+                              qualification:
+                                 type: string
+                                 required: true
+                  example:
+                     {
+                        email: 'quanghiep03198@gmail.com',
+                        displayName: 'Quang Hiep',
+                        dateOfBirth: '1/1/1980',
+                        eduBackground:
+                           {
+                              qualification: 'Đại Học',
+                              universityName: 'Đại học Sư Phạm Hà Nội',
+                              graduatedAt: '1999-12-31T17:00:00.000Z'
+                           },
+                        phone: '0336089988',
+                        gender: 'Nam'
+                     }
+         responses:
+            201:
+               description: Tạo mới giáo viên thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Teacher'
+                     example:
+                        {
+                           email: 'quanghiep03198@gmail.com',
+                           password: '123123',
+                           displayName: 'Quang Hiep',
+                           dateOfBirth: '1/1/1980',
+                           eduBackground:
+                              {
+                                 qualification: 'Đại Học',
+                                 universityName: 'Đại học Sư Phạm Hà Nội',
+                                 graduatedAt: '1999-12-31T17:00:00.000Z'
+                              },
+                           employmentStatus: 'ĐANG CÔNG TÁC',
+                           phone: '0336089988',
+                           gender: 'Nam'
+                        }
+            400:
+               description: Sai định dạng dữ liệu gửi lên hoặc giáo viên đã tồn tại trong hệ thống
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'BAD REQUEST', statusCode: 400 }
+   /update-user:
+      patch:
+         tags:
+            - User
+         summary: Chỉnh sửa và cập nhật thông tin người dùng
+         description: Chỉnh sửa và cập nhật thông tin của người dùng đang đăng nhập trên hệ thống
+         parameters:
+            - name: body
+              in: body
+              required: true
+              schema:
+                 type: object
+                 properties:
+                    displayName:
+                       type: string
+                    gender:
+                       type: string
+                       format: uppercase
+                       enum:
+                          - nam
+                          - nữ
+                    dateOfBirth:
+                       type: date
+                    picture:
+                       type: string
+                    eduBackground:
+                       type: object
+                       properties:
+                          universityName:
+                             type: string
+                          graduatedAt:
+                             type: date
+                          qualification:
+                             type: string
+
+         schema:
+            properties:
+               displayName:
+                  type: string
+               gender:
+                  type: string
+                  format: uppercase
+                  enum:
+                     - nam
+                     - nữ
+               dateOfBirth:
+                  type: Date
+               picture:
+                  type: string
+               eduBackground:
+                  type: object
+                  properties:
+                     universityName:
+                        type: string
+                     graduatedAt:
+                        type: date
+                     qualification:
+                        type: string
+         responses:
+            201:
+               description: Chỉnh sửa và cập nhật thông tin của người dùng thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/User'
+
+                     example:
+                        {
+                           'deleted': false,
+                           '_id': '6443d3e06396f217283259c1',
+                           'email': 'zerotwo13102001@gmail.com',
+                           'displayName': 'Ngọc Đức',
+                           'phone': '0328568088',
+                           'role': 'Headmaster',
+                           'isVerified': true,
+                           'employmentStatus': true,
+                           'updatedAt': '2023-05-16T14:52:11.754Z',
+                           'gender': 'Nam',
+                           'userStatusText': 'Đang làm việc',
+                           'id': '6443d3e06396f217283259c1'
+                        }
+            400:
+               description: Sai định dạng dữ liệu gửi lên hoặc user không tồn tại trong hệ thống
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'User does not exist! || dateOfBirth must be a valid date', statusCode: 400 }
+
+   /users/teachers:
+      get:
+         tags:
+            - User
+         summary: Lấy tất cả giáo viên
+         description: Lấy tất cả giáo viên của tất cả trạng thái
+         parameters:
+            - name: is_verified
+              in: query
+              required: true
+              description: Lọc những giáo viên đã xác thực gmail
+              schema:
+                 type: boolean
+
+            - name: employment_status
+              in: query
+              required: true
+              description: Lọc giáo viên theo tình trạng làm việc
+              schema:
+                 type: boolean
+
+         responses:
+            200:
+               description: Lấy thành công danh sách tất cả giáo viên của 3 trạng thái
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: '#/components/schemas/Teacher'
+                     example:
+                        [
+                           {
+                              'email': 'hieptqph19231@fpt.edu.vn',
+                              'phone': '0123321123',
+                              'displayName': 'Teacher 1',
+                              'dateOfBirth': '1989-12-31T17:00:00.000Z',
+                              'gender': 'Nữ',
+                              'eduBackground':
+                                 {
+                                    'qualification': 'Đại Học',
+                                    'universityName': 'Đại học Sư Phạm Hà Nội',
+                                    'graduatedAt': '1999-12-31T17:00:00.000Z',
+                                    '_id': '6448f4d7d362bc157275d9e0'
+                                 },
+                              'employmentStatus': false,
+                              'role': 'Teacher',
+                              'isVerified': true,
+                              'createdAt': '2023-04-26T09:54:31.379Z',
+                              'updatedAt': '2023-05-07T12:33:52.645Z',
+                              'deleted': true,
+                              'userStatusText': 'Đã nghỉ việc',
+                              'id': '6448f4d7d362bc157275d9df'
+                           }
+                        ]
+            404:
+               description: Không tìm thấy giáo viên nào
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Không thể tìm thấy giáo viên nào!', statusCode: 400 }
+   /users/teachers/:userId/deactivate:
+      patch:
+         tags:
+            - User
+         summary: Thay đổi trạng thái giáo viên
+         description: Thay đổi trạng thái giáo viên thành đã nghỉ việc
+         responses:
+            201:
+               description: Chuyển trạng thái giáo viên thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Teacher'
+                     example:
+                        {
+                           _id: '6453e220568371f8807768f9',
+                           email: 'duongcoi1803@gmail.com',
+                           phone: '0982967646',
+                           displayName": 'Dương teacher',
+                           dateOfBirth: '2023-05-10T17:00:00.000Z',
+                           gender: 'Nam',
+                           eduBackground:
+                              {
+                                 qualification: '12/12',
+                                 universityName: 'cao đẳng fpt',
+                                 graduatedAt: '2023-06-02T17:00:00.000Z'
+                              },
+                           employmentStatus: false,
+                           role: 'Teacher',
+                           isVerified: true,
+                           deleted: true,
+                           createdAt: '2023-05-04T16:49:36.082Z',
+                           updatedAt: '2023-05-14T08:36:13.460Z'
+                        }
+            404:
+               description: Không tìm thấy giáo viên với userId được cung cấp
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Cannot find teacher to deactivate!', statusCode: 404 }
+   /users/create-parents-account:
+      post:
+         tags:
+            - User
+         summary: Tạo mới tài khoản phụ huynh
+         description: Tạo mới tài khoản phụ huynh
+         requestBody:
+            type: object
+            content:
+               application/json:
+                  schema:
+                     properties:
+                        displayName:
+                           type: string
+                           required: true
+                        gender:
+                           type: string
+                           format: uppercase
+                           enum:
+                              - nam
+                              - nữ
+                           required: true
+                        email:
+                           type: string
+                           regex: '/^[\w.+\-]+@gmail\.com$/'
+                           required: true
+                        phone:
+                           type: string
+                           length: 10
+                           required: true
+                        dateOfBirth:
+                           type: Date
+                           required: true
+                  example:
+                     {
+                        email: 'viet@gmail.com',
+                        displayName: 'Parent of student 9',
+                        gender: 'Nam',
+                        phone: '0930000009',
+                        dateOfBirth: '1/1/1990'
+                     }
+         responses:
+            201:
+               description: Tạo tài khoản phụ huynh thành công và gửi mail xác thực
+               content:
+                  application/json:
+                     schema:
+                        properties:
+                           displayName:
+                              type: string
+                              required: true
+                           gender:
+                              type: string
+                              format: uppercase
+                              enum:
+                                 - nam
+                                 - nữ
+                              required: true
+                           email:
+                              type: string
+                              regex: '/^[\w.+\-]+@gmail\.com$/'
+                              required: true
+                           phone:
+                              type: string
+                              length: 10
+                              required: true
+                           dateOfBirth:
+                              type: Date
+                              required: true
+                     example:
+                        {
+                           'email': '1692002@gmail.com',
+                           'phone': '0123000003',
+                           'displayName': 'Parent of student 10',
+                           'dateOfBirth': '1989-12-31T17:00:00.000Z',
+                           'gender': 'Nam'
+                        }
+            400:
+               description: Parent không thỏa mãn validate hoặc không học sinh nào có số điện thoại của phụ huynh này
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: "No student has this parent's phone number!", statusCode: 400 }
+
+   /users/parents/:classId:
+      get:
+         tags:
+            - User
+         summary: Lấy thông tin phụ huynh theo lớp học
+         description: Lấy ra thông tin phụ huynh của lớp đó
+         responses:
+            200:
+               description: Lấy thông tin phụ huynh theo lớp học thành công
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: '#/components/schemas/Parent'
+                     example:
+                        [
+                           {
+                              _id: '6457716cf84f02478de4cb86',
+                              phone: '0123000001',
+                              displayName: 'Parent of student 1',
+                              dateOfBirth: '1989-12-31T17:00:00.000Z',
+                              gender: 'Nam',
+                              children:
+                                 [
+                                    {
+                                       _id: '645751893a9c237034e67959',
+                                       fullName: 'Tran Thi B',
+                                       parentsPhoneNumber: '0123000001'
+                                    }
+                                 ]
+                           }
+                        ]
+
+   /users/search-parents:
+      post:
+         tags:
+            - User
+         summary: Tìm kiếm parents user
+         description: Tìm kiếm parents user theo số điện thoại hoặc tên hoặc email đều được (nếu tìm theo tên thì chỉ có thể tìm bằng tiếng Anh và tiếng Việt không dấu - đang chờ fix để có thể tìm bằng tiếng Việt có dấu).
+         requestBody:
+            type: object
+            content:
+               application/json:
+                  schema:
+                     properties:
+                        searchTerm:
+                           type: string
+                  example: { searchTerm: 'viet phu huynh' }
+         responses:
+            200:
+               description: Tìm thấy tài khoản phụ huynh
+               content:
+                  application/json:
+                     schema:
+                        type: array
+                        items:
+                           $ref: '#/components/schemas/SearchParentUserResponse'
+                     example:
+                        [
+                           {
+                              '_id': '6457886600b81ab326e616ab',
+                              'phone': '0123000004',
+                              'displayName': 'viet phu huynh',
+                              'dateOfBirth': '1989-12-31T17:00:00.000Z',
+                              'gender': 'Nam',
+                              'picture': 'https://ui-avatars.com/api/?name=P',
+                              'employmentStatus': false,
+                              'role': 'Parents',
+                              'isVerified': false,
+                              'deleted': false,
+                              'createdAt': '2023-05-07T11:15:50.290Z',
+                              'updatedAt': '2023-05-07T11:15:50.290Z',
+                              'address': 'Hải Phòng',
+                              'email': 'test4@gmail.com'
+                           },
+                           {
+                              '_id': '6457936dd95a044c111a2eac',
+                              'phone': '0123000005',
+                              'displayName': 'viet phu huynh',
+                              'dateOfBirth': '1989-12-31T17:00:00.000Z',
+                              'gender': 'Nam',
+                              'picture': 'https://ui-avatars.com/api/?name=P',
+                              'employmentStatus': false,
+                              'role': 'Parents',
+                              'isVerified': false,
+                              'deleted': false,
+                              'createdAt': '2023-05-07T12:02:53.475Z',
+                              'updatedAt': '2023-05-07T12:02:53.475Z',
+                              'address': 'Hải Phòng',
+                              'email': 'test5@gmail.com'
+                           }
+                        ]
+
+            404:
+               description: Không thể tìm thấy bất kỳ tài khoản phụ huynh nào.
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Cannot find any parents account!', statusCode: 404 }
+   /users/:id:
+      get:
+         tags:
+            - User
+         summary: Chi tiết người dùng
+         description: Lấy ra chi tiết người dùng
+         responses:
+            200:
+               description: Lấy ra chi tiết người dùng thành công
+               content:
+                  application/json:
+                     schema:
+                        properties:
+                           _id:
+                              type: ObjectId
+                           email:
+                              type: string
+                           displayName:
+                              type: string
+                           role:
+                              type: string
+                           phone:
+                              type: string
+                           isVerified:
+                              type: boolean
+                           employmentStatus:
+                              type: boolean
+                           address:
+                              type: string
+                     example:
+                        {
+                           _id: '64464753502404d02cef4189',
+                           email: 'nguyenqv2002mt@gmail.com',
+                           displayName: 'Admin',
+                           role: 'Headmaster',
+                           phone: '0965115792',
+                           isVerified: true,
+                           employmentStatus: true,
+                           address: 'Hà Nội'
+                        }
+            404:
+               description: Không tìm thấy user
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'User not found!', statusCode: 404 }

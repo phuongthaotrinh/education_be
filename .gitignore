@@ -1,0 +1,9 @@
+node_modules
+.vercel
+dump.rdb
+thunder-tests
+.vscode
+.env
+env
+dist
+mongodb_playground

@@ -1,0 +1,192 @@
+paths:
+   /permissions:
+      post:
+         tags:
+            - Permission
+         description: Thêm mới permission
+         summary: Đăng nhập với vai trò là Headmaster
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/Permissions'
+                  example:
+                     {
+                        role: 'HEADMASTER',
+                        type: 'class',
+                        permissions: [{ _id: '637ec5ce572ebd6759c65124', name: 'Lớp học', code: 'class.list_all' }]
+                     }
+         responses:
+            201:
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Permissions'
+                     example:
+                        {
+                           _id: '637ec5ce572ebd6759c65124',
+                           role: 'HEADMASTER',
+                           type: 'class',
+                           permissions: [{ _id: '637ec5ce572ebd6759c65124', name: 'Lớp học', code: 'class.list_all' }]
+                        }
+            400:
+               description: không truyền dữ liệu, hoặc không thoả mãn validate
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        { message: 'No data provided! | \"role\" length must be an uppercase string"', statusCode: 400 }
+   /permissions/get-by-roll:
+      get:
+         tags:
+            - Permission
+         description: Lấy thông tin 1 permission
+         summary: Đăng nhập
+         responses:
+            200:
+               description: OK
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Permissions'
+                     example:
+                        {
+                           _id: '637ec5ce572ebd6759c65124',
+                           role: 'HEADMASTER',
+                           type: 'class',
+                           permissions: [{ _id: '637ec5ce572ebd6759c65124', name: 'Lớp học', code: 'class.list_all' }]
+                        }
+            400:
+               description: không truyền role hoặc không thoả mãn validate
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Bad request', statusCode: 400 }
+            404:
+               description: Không tìm thấy permission
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Cannot get permissions!', statusCode: 404 }
+
+   /permissions/:id:
+      patch:
+         tags:
+            - Permission
+         description: Cập nhật permission
+         summary: Đăng nhập với vai trò là Headmaster
+         requestBody:
+            required: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/Permissions'
+                  example:
+                     {
+                        role: 'HEADMASTER',
+                        type: 'class',
+                        permissions: [{ _id: '637ec5ce572ebd6759c65124', name: 'Lớp học', code: 'class.list_all' }]
+                     }
+         responses:
+            201:
+               description: Sửa thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Permissions'
+                     example:
+                        {
+                           _id: '637ec5ce572ebd6759c65124',
+                           role: 'HEADMASTER',
+                           type: 'class',
+                           permissions: [{ _id: '637ec5ce572ebd6759c65124', name: 'Lớp học', code: 'class.list_all' }]
+                        }
+            400:
+               description: không truyền ID hoặc dữ liệu, hoặc không thoả mãn validate
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'No ID provided! | No data provided! | Invalid ID!', statusCode: 400 }
+            404:
+               description: không tìm thấy permission
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Permission not found', statusCode: 404 }
+      delete:
+         tags:
+            - Permission
+         description: Xóa mềm hoặc xóa vĩnh viễn 1 permission
+         summary: Đăng nhập với vai trò là Headmaster
+         parameters:
+            - name: option
+              in: query
+              description: Xác định kiểu xóa Permission
+              schema:
+                 type: string
+                 enum:
+                    - soft
+                    - force
+              default: soft
+         responses:
+            200:
+               description: Xoá thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpResponse'
+                     example:
+                        {
+                           message: The permission has been successfully deleted permanently (force) | The permission has been successfully moved to the trash (soft),
+                           statusCode: 200
+                        }
+            400:
+               description: Không truyền ID
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'No ID provided!', statusCode: 400 }
+            404:
+               description: Không tìm thấy permission
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Permission not found', statusCode: 404 }
+
+   /permissions/:id/restore:
+      patch:
+         tags:
+            - Permission
+         description: Khôi phục 1 permission đã xóa mềm
+         summary: Khôi phục permission
+         responses:
+            201:
+               description: Khôi phục thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpResponse'
+                     example: { message: Permission has been successfully restored, statusCode: 201 }
+            400:
+               description: không truyền ID hoặc không thoả mãn validate
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'No ID provided! | Invalid ID!', statusCode: 400 }
+            404:
+               description: không tìm thấy permission
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Permission not found', statusCode: 404 }

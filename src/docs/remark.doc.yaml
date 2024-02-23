@@ -1,0 +1,58 @@
+paths:
+   /student-remark:
+      post:
+         tags:
+            - Student Remark
+         description: Thêm đánh giá về học sinh
+         summary: Đăng nhập với vai trò là giáo viên
+         requestBody:
+            require: true
+            content:
+               application/json:
+                  schema:
+                     $ref: '#/components/schemas/Remark'
+                  example:
+                     {
+                        'student': '6493c9f68f6d1778e45c97ac',
+                        'conduct': 'Khá',
+                        'proficiency': 'Khá',
+                        'schoolYear': '649d61a2f8ea66b5730cd386',
+                        'remark': 'Ngoan, học giỏi, lễ phép, đoàn kết với bạn bè',
+                        'remarkedBy': 'ok'
+                     }
+
+         responses:
+            201:
+               description: ok
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/Remark'
+                     example:
+                        {
+                           '_id': '64a0601f2fbc22ac42562b22',
+                           schoolYear: '649d61a2f8ea66b5730cd386',
+                           student: 649b2b57fa0af79f71e3cac1,
+                           conduct: 'ok',
+                           createdAt: '2023-07-01T17:19:32.973+00:00',
+                           isQualified: true,
+                           proficiency: 'ok',
+                           remarkedBy: '6448f4d7d362bc157275d9df',
+                           updatedAt: '2023-07-01T17:19:32.973+00:00'
+                        }
+            409:
+               description: Nhận xét cho học sinh này trong năm đã tồn tại !
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        { statusCode: 409, message: 'Remark for this student in current school year already existed!' }
+            400:
+               description: Giáo viên chủ nhiệm mới được quyền thêm nhận xét cho học sinh này
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        { 'message': 'Only head teacher can remark conduct for this student !', 'statusCode': 400 }

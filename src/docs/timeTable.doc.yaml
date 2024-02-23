@@ -1,0 +1,1498 @@
+paths:
+   /time-table/:classId:
+      get:
+         tags:
+            - Time Table
+         summary: Lấy thời khóa biểu theo lớp học.
+         description: Lấy danh sách các môn học và lịch học của 1 lớp học cụ thể
+         responses:
+            200:
+               description: get thời khóa biểu theo lớp thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/TimeTable'
+                     example:
+                        {
+                           'schedule':
+                              {
+                                 'monday':
+                                    [
+                                       { 'period': 1 },
+                                       { 'period': 2 },
+                                       { 'period': 3 },
+                                       { 'period': 4 },
+                                       { 'period': 5 },
+                                       { 'period': 6 },
+                                       { 'period': 7 },
+                                       { 'period': 8 },
+                                       { 'period': 9 },
+                                       { 'period': 10 }
+                                    ],
+                                 'tuesday':
+                                    [
+                                       { 'period': 1 },
+                                       { 'period': 2 },
+                                       { 'period': 3 },
+                                       { 'period': 4 },
+                                       { 'period': 5 },
+                                       { 'period': 6 },
+                                       { 'period': 7 },
+                                       { 'period': 8 },
+                                       { 'period': 9 },
+                                       { 'period': 10 }
+                                    ],
+                                 'wednessday':
+                                    [
+                                       { 'period': 1 },
+                                       { 'period': 2 },
+                                       { 'period': 3 },
+                                       { 'period': 4 },
+                                       { 'period': 5 },
+                                       { 'period': 6 },
+                                       { 'period': 7 },
+                                       { 'period': 8 },
+                                       { 'period': 9 },
+                                       { 'period': 10 }
+                                    ],
+                                 'thursday':
+                                    [
+                                       { 'period': 1 },
+                                       { 'period': 2 },
+                                       { 'period': 3 },
+                                       { 'period': 4 },
+                                       { 'period': 5 },
+                                       { 'period': 6 },
+                                       { 'period': 7 },
+                                       { 'period': 8 },
+                                       { 'period': 9 },
+                                       { 'period': 10 }
+                                    ],
+                                 'friday':
+                                    [
+                                       { 'period': 1 },
+                                       { 'period': 2 },
+                                       { 'period': 3 },
+                                       { 'period': 4 },
+                                       { 'period': 5 },
+                                       { 'period': 6 },
+                                       { 'period': 7 },
+                                       { 'period': 8 },
+                                       { 'period': 9 },
+                                       { 'period': 10 }
+                                    ],
+                                 'saturday':
+                                    [
+                                       { 'period': 1 },
+                                       { 'period': 2 },
+                                       { 'period': 3 },
+                                       { 'period': 4 },
+                                       { 'period': 5 },
+                                       { 'period': 6 },
+                                       { 'period': 7 },
+                                       { 'period': 8 },
+                                       { 'period': 9 },
+                                       { 'period': 10 }
+                                    ]
+                              },
+                           '_id': '6460e3d8809d27b9841caf69',
+                           'class': '644bd34372da9763af8381d7',
+                           'createdAt': '2023-05-14T13:36:24.993Z',
+                           'updatedAt': '2023-05-14T13:36:24.993Z'
+                        }
+            400:
+               description: Không tìm thấy thời khóa biểu
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        example: { statusCode: 404, message: Time table not found! }
+   /time-table/create:
+      post:
+         tags:
+            - Time Table
+         summary: Tạo mới thời khóa biểu
+         description: Tạo mới 1 thời khóa biểu
+         requestBody:
+            require: true
+            content:
+               application/json:
+                  schema:
+                     properties:
+                        schedule:
+                           required: true
+                           type: object
+                           description: Lịch học các ngày trong tuần
+                           properties:
+                              monday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                              tuesday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                              wednesday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                              thursday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                              friday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                              saturday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                        class:
+                           required: true
+                           type: ObjectId
+                           description: 'id của class'
+                  example:
+                     {
+                        'class': '645227d4f950ab74cb145cf0',
+                        'schedule':
+                           {
+                              'monday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '6450fc76602e89df8a53254c',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '6449324706dd1ceacff50aaf',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '6449324706dd1ceacff50aaf',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '6449324706dd1ceacff50aaf',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ],
+                              'tuesday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '6449215ad739366960dfc2ac',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '6449215ad739366960dfc2ac',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '6449215ad739366960dfc2ac',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ],
+                              'wednesday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ],
+                              'thursday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ],
+                              'friday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 6,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 7,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 8,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 9,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 10,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ],
+                              'saturday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 6,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 7,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 8,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 9,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 10,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ]
+                           }
+                     }
+         responses:
+            201:
+               description: Tạo mới thời khóa biểu thành công
+               content:
+                  application/json:
+                     schema:
+                        properties:
+                           schedule:
+                              required: true
+                              type: object
+                              description: Lịch học các ngày trong tuần
+                              properties:
+                                 monday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                                 tuesday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                                 wednesday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                                 thursday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                                 friday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                                 saturday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                           class:
+                              required: true
+                              type: ObjectId
+                              description: 'id của class'
+                     example:
+                        {
+                           'class': '645227d4f950ab74cb145cf0',
+                           'schedule':
+                              {
+                                 'monday':
+                                    [
+                                       {
+                                          'period': 1,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       { 'period': 2, 'subject': null, 'teacher': null },
+                                       {
+                                          'period': 3,
+                                          'subject': { '_id': '6449324706dd1ceacff50aaf', 'subjectName': 'Mỹ thuật' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 4,
+                                          'subject': { '_id': '6449324706dd1ceacff50aaf', 'subjectName': 'Mỹ thuật' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 5,
+                                          'subject': { '_id': '6449324706dd1ceacff50aaf', 'subjectName': 'Mỹ thuật' },
+                                          'teacher': null
+                                       }
+                                    ],
+                                 'tuesday':
+                                    [
+                                       {
+                                          'period': 1,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 2,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       { 'period': 3, 'subject': null, 'teacher': null },
+                                       { 'period': 4, 'subject': null, 'teacher': null },
+                                       { 'period': 5, 'subject': null, 'teacher': null }
+                                    ],
+                                 'thursday':
+                                    [
+                                       {
+                                          'period': 1,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 2,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 3,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 4,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 5,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       }
+                                    ],
+                                 'friday':
+                                    [
+                                       {
+                                          'period': 1,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 2,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 3,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 4,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 5,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 6,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 7,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 8,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 9,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 10,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       }
+                                    ],
+                                 'saturday':
+                                    [
+                                       {
+                                          'period': 1,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 2,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 3,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 4,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 5,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 6,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 7,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 8,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 9,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 10,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       }
+                                    ],
+                                 'wednessday': []
+                              },
+                           '_id': '6462095a56a898e44640969c',
+                           'createdAt': '2023-05-15T10:28:42.425Z',
+                           'updatedAt': '2023-05-15T10:28:42.425Z'
+                        }
+            400:
+               description: Dữ liệu gửi lên không thỏa mãn với validate
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Không thỏa mãn validate', statusCode: 400 }
+
+   /time-table/:classId/update:
+      patch:
+         tags:
+            - Time Table
+         summary: Cập nhật thời khóa biểu theo lớp học
+         description: Update lại thời khóa biểu
+         parameters:
+            - in: paths
+              name: classId
+              type: ObjectId
+              required: true
+         requestBody:
+            require: true
+            content:
+               application/json:
+                  schema:
+                     properties:
+                        schedule:
+                           required: true
+                           type: object
+                           description: Lịch học các ngày trong tuần
+                           properties:
+                              monday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                              tuesday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                              wednesday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                              thursday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                              friday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                              saturday:
+                                 type: array
+                                 required: true
+                                 items:
+                                    type: object
+                                    properties:
+                                       period:
+                                          required: true
+                                          type: number
+                                       subject:
+                                          required: true
+                                          type: string
+                                       teacher:
+                                          required: true
+                                          type: string
+                        class:
+                           type: string
+                           description: 'id của class'
+                  example:
+                     {
+                        'schedule':
+                           {
+                              'monday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '6449215ad739366960dfc2ac',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '6449324706dd1ceacff50aaf',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '6449324706dd1ceacff50aaf',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '6449324706dd1ceacff50aaf',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ],
+                              'tuesday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '6449215ad739366960dfc2ac',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '6449215ad739366960dfc2ac',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '6449215ad739366960dfc2ac',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ],
+                              'wednesday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ],
+                              'thursday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ],
+                              'friday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 6,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 7,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 8,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 9,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 10,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ],
+                              'saturday':
+                                 [
+                                    {
+                                       'period': 1,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 2,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 3,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 4,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 5,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 6,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 7,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 8,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 9,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    },
+                                    {
+                                       'period': 10,
+                                       'subject': '64496a5f269badbb8d2b24db',
+                                       'teacher': '6448f4d7d362bc157275d9df'
+                                    }
+                                 ]
+                           }
+                     }
+         responses:
+            201:
+               description: Update thời khóa biểu thành công
+               content:
+                  application/json:
+                     schema:
+                        properties:
+                           schedule:
+                              required: true
+                              type: object
+                              description: Lịch học các ngày trong tuần
+                              properties:
+                                 monday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                                 tuesday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                                 wednesday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                                 thursday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                                 friday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                                 saturday:
+                                    type: array
+                                    required: true
+                                    items:
+                                       type: object
+                                       properties:
+                                          period:
+                                             required: true
+                                             type: number
+                                          subject:
+                                             required: true
+                                             type: string
+                                          teacher:
+                                             required: true
+                                             type: string
+                           class:
+                              type: string
+                              description: 'id của class'
+                     example:
+                        {
+                           'schedule':
+                              {
+                                 'monday':
+                                    [
+                                       {
+                                          'period': 1,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       { 'period': 2, 'subject': null, 'teacher': null },
+                                       {
+                                          'period': 3,
+                                          'subject': { '_id': '6449324706dd1ceacff50aaf', 'subjectName': 'Mỹ thuật' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 4,
+                                          'subject': { '_id': '6449324706dd1ceacff50aaf', 'subjectName': 'Mỹ thuật' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 5,
+                                          'subject': { '_id': '6449324706dd1ceacff50aaf', 'subjectName': 'Mỹ thuật' },
+                                          'teacher': null
+                                       }
+                                    ],
+                                 'tuesday':
+                                    [
+                                       {
+                                          'period': 1,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 2,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       { 'period': 3, 'subject': null, 'teacher': null },
+                                       { 'period': 4, 'subject': null, 'teacher': null },
+                                       { 'period': 5, 'subject': null, 'teacher': null }
+                                    ],
+                                 'thursday':
+                                    [
+                                       {
+                                          'period': 1,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 2,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 3,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 4,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 5,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       }
+                                    ],
+                                 'friday':
+                                    [
+                                       {
+                                          'period': 1,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 2,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 3,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 4,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 5,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 6,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 7,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 8,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 9,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 10,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       }
+                                    ],
+                                 'saturday':
+                                    [
+                                       {
+                                          'period': 1,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 2,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 3,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 4,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 5,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 6,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 7,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 8,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 9,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       },
+                                       {
+                                          'period': 10,
+                                          'subject':
+                                             { '_id': '64496a5f269badbb8d2b24db', 'subjectName': 'Tự nhiên & Xã hội' },
+                                          'teacher': null
+                                       }
+                                    ],
+                                 'wednessday': []
+                              },
+                           '_id': '6460e3d8809d27b9841caf69',
+                           'class': '644bd34372da9763af8381d7',
+                           'createdAt': '2023-05-14T13:36:24.993Z',
+                           'updatedAt': '2023-05-15T10:34:36.781Z'
+                        }
+            404:
+               description: Không thể tìm thấy thời khóa biểu để update
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Cannot find time table to update!', statusCode: 404 }
+            400:
+               description: Time Table không thỏa mãn validate
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'valid(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)', statusCode: 400 }
+   /time-table/:classId/delete:
+      delete:
+         tags:
+            - Time Table
+         summary: Xóa thời khóa biểu theo lớp học.
+         parameters:
+            - in: paths
+              name: classId
+              type: string
+              required: true
+         responses:
+            204:
+               description: Data trong thời khóa biểu rỗng
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Delete!', statusCode: 204 }
+            404:
+               description: Không tìm thấy thời khóa biểu để xóa
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example: { message: 'Cannot find time table to delete!', statusCode: 204 }
+
+   /timetable/teacher/:teacherId:
+      get:
+         tags:
+            - Time Table
+         summary: Cần đăng nhập
+         description: Lấy thời khóa biểu cho giáo viên theo lớp học
+         parameters:
+            - name: '_classId'
+              in: query
+              description: Class mà giáo viên có lịch học
+              schema:
+                 type: ObjectId
+         responses:
+            200:
+               description: Lấy ra thời khóa biểu cho giáo viên theo lớp thành công
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/TimeTable'
+                     example: null
+            400:
+               description: Thiếu, chưa đúng id class || class đó không tồn tại
+               content:
+                  application/json:
+                     schema:
+                        $ref: '#/components/schemas/HttpError'
+                     example:
+                        example: { statusCode: 404, message: Invalid class ID }
